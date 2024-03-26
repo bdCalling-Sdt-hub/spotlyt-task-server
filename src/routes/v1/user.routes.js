@@ -16,7 +16,7 @@ router.route("/").get(auth("common"), userController.getUsers);
 
 router
   .route("/:userId")
-  .get(auth("common"), validate(userValidation.getUser), userController.getUser)
+  .get(auth("common"), userController.getUser)
   .patch(
     auth("common"),
     [uploadUsers.single("image")],

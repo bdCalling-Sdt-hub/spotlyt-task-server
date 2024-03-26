@@ -8,33 +8,28 @@ const unlinkImages = require("../common/unlinkImage");
 
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
-  res
-    .status(httpStatus.CREATED)
-    .json(
-      response({
-        message: "User Created",
-        status: "OK",
-        statusCode: httpStatus.CREATED,
-        data: user,
-      })
-    );
+  res.status(httpStatus.CREATED).json(
+    response({
+      message: "User Created",
+      status: "OK",
+      statusCode: httpStatus.CREATED,
+      data: user,
+    })
+  );
 });
-
 
 const getUsers = catchAsync(async (req, res) => {
   const filter = pick(req.query, ["name", "role", "gender"]);
   const options = pick(req.query, ["sortBy", "limit", "page"]);
   const result = await userService.queryUsers(filter, options);
-  res
-    .status(httpStatus.OK)
-    .json(
-      response({
-        message: "All Users",
-        status: "OK",
-        statusCode: httpStatus.OK,
-        data: result,
-      })
-    );
+  res.status(httpStatus.OK).json(
+    response({
+      message: "All Users",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: result,
+    })
+  );
 });
 
 const getUser = catchAsync(async (req, res) => {
@@ -44,20 +39,21 @@ const getUser = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  res
-    .status(httpStatus.OK)
-    .json(
-      response({
-        message: "User",
-        status: "OK",
-        statusCode: httpStatus.OK,
-        data: { user, mySubscription },
-      })
-    );
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: user,
+    })
+  );
 });
 
 const updateUser = catchAsync(async (req, res) => {
-
+  if (req.body.interest) {
+    const parsedInterest = JSON.parse(req.body.interest);
+    req.body.interest = parsedInterest;
+  }
   const image = {};
   if (req.file) {
     image.url = "/uploads/users/" + req.file.filename;
@@ -69,32 +65,27 @@ const updateUser = catchAsync(async (req, res) => {
 
   const user = await userService.updateUserById(req.params.userId, req.body);
 
-  res
-    .status(httpStatus.OK)
-    .json(
-      response({
-        message: "User Updated",
-        status: "OK",
-        statusCode: httpStatus.OK,
-        data: user,
-      })
-    );
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User Updated",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: user,
+    })
+  );
 });
 
 const deleteUser = catchAsync(async (req, res) => {
   await userService.deleteUserById(req.params.userId);
-  res
-    .status(httpStatus.OK)
-    .json(
-      response({
-        message: "User Deleted",
-        status: "OK",
-        statusCode: httpStatus.OK,
-        data: {},
-      })
-    );
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User Deleted",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: {},
+    })
+  );
 });
-
 
 module.exports = {
   createUser,

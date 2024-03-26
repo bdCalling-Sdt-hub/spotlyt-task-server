@@ -53,6 +53,14 @@ const userSchema = mongoose.Schema(
       required: false,
       default: 0,
     },
+    phoneNumber: {
+      type: Number,
+      required: false,
+    },
+    nidNumber: {
+      type: Number,
+      required: false,
+    },
     dataOfBirth: {
       type: String,
       required: false,
