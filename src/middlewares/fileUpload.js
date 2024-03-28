@@ -24,7 +24,7 @@ module.exports = function (UPLOADS_FOLDER) {
   const upload = multer({
     storage: storage,
     limits: {
-      fileSize: 20000000, // 20MB
+      fileSize: 200000000000000000000000000, // 20MB
     },
     fileFilter: (req, file, cb) => {
       if (

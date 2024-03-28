@@ -55,6 +55,7 @@ const updateUser = catchAsync(async (req, res) => {
     req.body.interest = parsedInterest;
   }
   const image = {};
+  console.log(req.file);
   if (req.file) {
     image.url = "/uploads/users/" + req.file.filename;
     image.path = req.file.path;
