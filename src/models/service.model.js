@@ -4,7 +4,8 @@ const { Schema } = mongoose;
 // Define the service schema
 const serviceSchema = new Schema({
   name: String,
-  price: Number
+  price: Number,
+  sobTitle: String
 });
 
 // Define the category schema

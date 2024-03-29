@@ -61,6 +61,10 @@ const userSchema = mongoose.Schema(
       type: Number,
       required: false,
     },
+    isNIDVerified: {
+      type: Boolean,
+      default: false,
+    },
     dataOfBirth: {
       type: String,
       required: false,

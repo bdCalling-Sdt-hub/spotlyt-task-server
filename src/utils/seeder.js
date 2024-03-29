@@ -8,24 +8,29 @@ const usersData = [
     fullName: "Testing Admin",
     email: "admin@gmail.com",
     phoneNumber: "01735566789",
-    password: "1qazxsw2",
+    password: "$2a$08$cUQ3uMdbQjlyDF/dgn5mNuEt9fLJZqq8TaT9aKabrFuG5wND3/mPO",
     role: "admin",
+    isEmailVerified: true,
   },
   {
     fullName: "Testing Employee",
     email: "employee@gmail.com",
     phoneNumber: "01735566789",
-    password: "1qazxsw2",
+    password: "$2a$08$cUQ3uMdbQjlyDF/dgn5mNuEt9fLJZqq8TaT9aKabrFuG5wND3/mPO",
     role: "employee",
+    isEmailVerified: true,
   },
   {
     fullName: "Testing Client",
     email: "client@gmail.com",
     phoneNumber: "01734456873",
-    password: "1qazxsw2",
+    password: "$2a$08$cUQ3uMdbQjlyDF/dgn5mNuEt9fLJZqq8TaT9aKabrFuG5wND3/mPO",
     role: "client",
+    isEmailVerified: true,
+
   },
 ];
+
 
 const serviceData = [
   {
@@ -44,24 +49,24 @@ const serviceData = [
         name: "Facebook",
         service: [
           {
-            name: "Request likes",
+            name: "Request Likes",
             price: 0.6,
+            sobTitle: "Per Like",
           },
           {
-            name: "Request followers",
+            name: "Request Followers",
             price: 0.6,
+            sobTitle: "Per Follower",
           },
           {
-            name: "Request comments",
+            name: "Request Comments",
             price: 0.6,
-          },
-          {
-            name: "Request views",
-            price: 0.6,
+            sobTitle: "Per Comment",
           },
           {
             name: "Request sharing to story",
             price: 0.6,
+            sobTitle: "Per Story",
           },
         ],
       },
@@ -70,24 +75,24 @@ const serviceData = [
         name: "Instagram",
         service: [
           {
-            name: "Request likes",
+            name: "Request Likes",
             price: 0.6,
+            sobTitle: "Per Like",
           },
           {
-            name: "Request followers",
+            name: "Request Followers",
             price: 0.6,
+            sobTitle: "Per Follower",
           },
           {
-            name: "Request comments",
+            name: "Request Comments",
             price: 0.6,
-          },
-          {
-            name: "Request views",
-            price: 0.6,
+            sobTitle: "Per Comment",
           },
           {
             name: "Request sharing to story",
             price: 0.6,
+            sobTitle: "Per Story",
           },
         ],
       },
@@ -96,24 +101,24 @@ const serviceData = [
         name: "Tiktok",
         service: [
           {
-            name: "Request likes",
+            name: "Request Likes",
             price: 0.6,
+            sobTitle: "Per Like",
           },
           {
-            name: "Request followers",
+            name: "Request Followers",
             price: 0.6,
+            sobTitle: "Per Follower",
           },
           {
-            name: "Request comments",
+            name: "Request Comments",
             price: 0.6,
-          },
-          {
-            name: "Request views",
-            price: 0.6,
+            sobTitle: "Per Comment",
           },
           {
             name: "Request sharing to story",
             price: 0.6,
+            sobTitle: "Per Story",
           },
         ],
       },
@@ -134,24 +139,24 @@ const serviceData = [
         name: "Youtube",
         service: [
           {
-            name: "Request views",
+            name: "Request Views",
             price: 0.6,
+            sobTitle: "Per View",
           },
           {
             name: "Request Likes",
             price: 0.6,
+            sobTitle: "Per Like",
           },
           {
-            name: "Request comments",
+            name: "Request Comments",
             price: 0.6,
-          },
-          {
-            name: "Request views",
-            price: 0.6,
+            sobTitle: "Per Comment",
           },
           {
             name: "Request Subscriber",
             price: 0.6,
+            sobTitle: "Per Subscriber",
           },
         ],
       },
@@ -174,22 +179,22 @@ const serviceData = [
           {
             name: "Surveys ",
             price: 0.6,
+            sobTitle: "Per Survey",
           },
           {
             name: "App Downloads",
             price: 0.6,
+            sobTitle: "Per Download",
           },
           {
             name: "Game Downloads",
             price: 0.6,
-          },
-          {
-            name: "Request views",
-            price: 0.6,
+            sobTitle: "Per Download",
           },
           {
             name: "Request Streaming",
             price: 0.6,
+            sobTitle: "Per Stream",
           },
         ],
       },
