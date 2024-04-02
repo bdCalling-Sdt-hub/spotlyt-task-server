@@ -34,7 +34,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
       trim: true,
-      minlength: 8, 
+      minlength: 8,
       validate(value) {
         if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
           throw new Error(
@@ -61,9 +61,10 @@ const userSchema = mongoose.Schema(
       type: Number,
       required: false,
     },
-    isNIDVerified: {
-      type: Boolean,
-      default: false,
+    nidStatus: {
+      type: String,
+      enum: ["approved", "cancelled", "pending", "unverified"],
+      default: "unverified",
     },
     dataOfBirth: {
       type: String,

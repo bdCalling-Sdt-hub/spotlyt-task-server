@@ -8,16 +8,14 @@ const createUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Email already taken");
   }
-  const oneTimeCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+  const oneTimeCode =
+    Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
   if (userBody.role === "client" || userBody.role === "employee") {
-
     sendEmailVerification(userBody.email, oneTimeCode);
   }
   return User.create({ ...userBody, oneTimeCode });
 };
-
-
 
 const queryUsers = async (filter, options) => {
   const query = {};
@@ -40,8 +38,6 @@ const queryUsers = async (filter, options) => {
 
   return users;
 };
-
-
 
 const getUserById = async (id) => {
   return User.findById(id);
@@ -91,7 +87,6 @@ const isUpdateUser = async (userId, updateBody) => {
   const oneTimeCode =
     Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-
   if (updateBody.role === "client" || updateBody.role === "employee") {
     sendEmailVerification(updateBody.email, oneTimeCode);
   }
@@ -108,6 +103,63 @@ const isUpdateUser = async (userId, updateBody) => {
   return user;
 };
 
+const verifyNid = async (id, nidNumber) => {
+  const user = await getUserById(id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  if (user === "approved") {
+    throw new ApiError(httpStatus.BAD_REQUEST, "NID already verified");
+  }
+  if (user === "pending") {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Waiting for admin approval");
+  }
+  user.nidNumber = nidNumber;
+  await user.save();
+  return user;
+};
+
+const nidVerifyApproval = async (id) => {
+  const user = await getUserById(id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  if (user === "approved") {
+    throw new ApiError(httpStatus.BAD_REQUEST, "NID already verified");
+  }
+  if (user === "unverified" || user === "cancelled") {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "User not submitted Nid for approval"
+    );
+  }
+  if (user === "pending") {
+    user.nidStatus = "approved";
+  }
+  await user.save();
+  return user;
+};
+
+const nidVerifyReject = async (id) => {
+  const user = await getUserById(id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  if (user.nidStatus !== "pending") {
+    throw new ApiError(httpStatus.BAD_REQUEST, "NID verification cannot be rejected for this user");
+  }
+  user.nidStatus = "rejected"; // Assuming "rejected" is the status when NID verification is rejected
+  await user.save();
+  return user;
+};
+
+
+const nidVerifySubmitList = async () => {
+  const users = await User.find({ nidStatus: { $eq: "pending" }});
+  return users;
+};
+
+
 module.exports = {
   createUser,
   queryUsers,
@@ -115,5 +167,9 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
-  isUpdateUser
+  isUpdateUser,
+  verifyNid,
+  nidVerifyApproval,
+  nidVerifyReject,
+  nidVerifySubmitList
 };

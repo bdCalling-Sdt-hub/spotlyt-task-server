@@ -88,10 +88,62 @@ const deleteUser = catchAsync(async (req, res) => {
   );
 });
 
+const verifyNid = catchAsync(async (req, res) => {
+  const user = await userService.verifyNid( req.user.id,req.body.nidNumber);
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User Verified",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: user,
+    })
+  );
+});
+
+const nidVerifyApproval = catchAsync(async (req, res) => {
+  const user = await userService.nidVerifyApproval(req.query.id);
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User NID Verify Approved",
+      status: "OK",
+      statusCode: httpStatus.OK,
+  
+    })
+  )
+});
+
+const nidVerifyReject = catchAsync(async (req, res) => {
+  const user = await userService.nidVerifyReject(req.query.id);
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User NID Verify Rejected",
+      status: "OK",
+      statusCode: httpStatus.OK,
+  
+    })
+  )
+});
+
+const nidVerifySubmitList = catchAsync(async (req, res) => {
+  const user = await userService.nidVerifySubmitList();
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User NID Verify List",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: user
+    })
+  )
+});
+
 module.exports = {
   createUser,
   getUsers,
   getUser,
   updateUser,
   deleteUser,
+  verifyNid,
+  nidVerifyApproval,
+  nidVerifyReject,
+  nidVerifySubmitList
 };
