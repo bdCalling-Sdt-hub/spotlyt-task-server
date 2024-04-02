@@ -6,6 +6,8 @@ const docsRoute = require("./docs.routes");
 const taskRoute = require("./tasks.routes");
 const referralRoute = require("./referral.routes");
 const termsRoute = require("./terms.routes");
+const privacyRoute = require("./privacy.routes");
+const aboutRoute = require("./about.routes");
 
 const router = express.Router();
 
@@ -29,7 +31,15 @@ const defaultRoutes = [
   {
     path: "/terms",
     route: termsRoute,
-  }
+  },
+  {
+    path: "/privacy",
+    route: privacyRoute,
+  },
+  {
+    path: "/about",
+    route: aboutRoute,
+  },
   
  
 ];

@@ -5,3 +5,5 @@ module.exports.userService = require('./user.service');
 module.exports.referralService = require('./referral.service');
 module.exports.tasksService = require('./tasks.service');
 module.exports.termsService = require('./terms.service');
+module.exports.privacyService = require('./privacy.service');
+module.exports.aboutService = require('./about.service');
