@@ -147,13 +147,14 @@ const verifyNid = async (id, nidNumber) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-  if (user === "approved") {
+  if (user.nidStatus === "approved") {
     throw new ApiError(httpStatus.BAD_REQUEST, "NID already verified");
   }
-  if (user === "pending") {
+  if (user.nidStatus === "pending") {
     throw new ApiError(httpStatus.BAD_REQUEST, "Waiting for admin approval");
   }
   user.nidNumber = nidNumber;
+  user.nidStatus= 'pending'
   await user.save();
   return user;
 };
@@ -163,16 +164,16 @@ const nidVerifyApproval = async (id) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-  if (user === "approved") {
+  if (user.nidStatus === "approved") {
     throw new ApiError(httpStatus.BAD_REQUEST, "NID already verified");
   }
-  if (user === "unverified" || user === "cancelled") {
+  if (user.nidStatus === "unverified" || user.nidStatus === "cancelled") {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
       "User not submitted Nid for approval"
     );
   }
-  if (user === "pending") {
+  if (user.nidStatus === "pending") {
     user.nidStatus = "approved";
   }
   await user.save();
@@ -184,13 +185,13 @@ const nidVerifyReject = async (id) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-  if (user.nidStatus !== "pending") {
+  if (user.nidStatus !== "cancelled") {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      "NID verification cannot be rejected for this user"
+      "NID verification already cancelled for this user"
     );
   }
-  user.nidStatus = "rejected"; // Assuming "rejected" is the status when NID verification is rejected
+  user.nidStatus = "cancelled"; // Assuming "cancelled" is the status when NID verification is cancelled
   await user.save();
   return user;
 };
