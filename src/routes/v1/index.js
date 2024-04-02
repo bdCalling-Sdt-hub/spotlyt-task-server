@@ -8,6 +8,7 @@ const referralRoute = require("./referral.routes");
 const termsRoute = require("./terms.routes");
 const privacyRoute = require("./privacy.routes");
 const aboutRoute = require("./about.routes");
+const withdrawalRoute = require("./withdrawal.routes");
 
 const router = express.Router();
 
@@ -40,8 +41,10 @@ const defaultRoutes = [
     path: "/about",
     route: aboutRoute,
   },
-  
- 
+  {
+    path: "/withdrawal",
+    route: withdrawalRoute,
+  },
 ];
 
 const devRoutes = [
