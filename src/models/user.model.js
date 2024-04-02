@@ -83,6 +83,14 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
     },
+    referralCode: {
+      type: String,
+      required: false,
+    },
+    claimedReferralCode: {
+      type: String,
+      required: false,
+    },
     isEmailVerified: {
       type: Boolean,
       default: false,

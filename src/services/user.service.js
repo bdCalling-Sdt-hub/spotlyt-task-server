@@ -8,6 +8,26 @@ const createUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Email already taken");
   }
+
+  function generateReferralCode(length = 6) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let referralCode = "";
+
+    for (let i = 0; i < length; i++) {
+      referralCode += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    return referralCode;
+  }
+
+  const referralCode = generateReferralCode();
+
+  if (userBody.role === "client" || userBody.role === "employee") {
+    userBody.referralCode = referralCode;
+  }
+
   const oneTimeCode =
     Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
@@ -84,6 +104,25 @@ const isUpdateUser = async (userId, updateBody) => {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
 
+  function generateReferralCode(length = 6) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let referralCode = "";
+
+    for (let i = 0; i < length; i++) {
+      referralCode += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    return referralCode;
+  }
+
+  const referralCode = generateReferralCode();
+
+  if (updateBody.role === "client" || updateBody.role === "employee") {
+    updateBody.referralCode = referralCode;
+  }
+
   const oneTimeCode =
     Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
@@ -146,19 +185,20 @@ const nidVerifyReject = async (id) => {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
   if (user.nidStatus !== "pending") {
-    throw new ApiError(httpStatus.BAD_REQUEST, "NID verification cannot be rejected for this user");
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "NID verification cannot be rejected for this user"
+    );
   }
   user.nidStatus = "rejected"; // Assuming "rejected" is the status when NID verification is rejected
   await user.save();
   return user;
 };
 
-
 const nidVerifySubmitList = async () => {
-  const users = await User.find({ nidStatus: { $eq: "pending" }});
+  const users = await User.find({ nidStatus: { $eq: "pending" } });
   return users;
 };
-
 
 module.exports = {
   createUser,
@@ -171,5 +211,5 @@ module.exports = {
   verifyNid,
   nidVerifyApproval,
   nidVerifyReject,
-  nidVerifySubmitList
+  nidVerifySubmitList,
 };

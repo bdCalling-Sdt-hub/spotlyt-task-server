@@ -19,6 +19,7 @@ const usersData = [
     password: "$2a$08$cUQ3uMdbQjlyDF/dgn5mNuEt9fLJZqq8TaT9aKabrFuG5wND3/mPO",
     role: "employee",
     isEmailVerified: true,
+    referralCode:"TEST12"
   },
   {
     fullName: "Testing Client",
@@ -27,6 +28,7 @@ const usersData = [
     password: "$2a$08$cUQ3uMdbQjlyDF/dgn5mNuEt9fLJZqq8TaT9aKabrFuG5wND3/mPO",
     role: "client",
     isEmailVerified: true,
+    referralCode:"TEST13"
 
   },
 ];
