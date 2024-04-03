@@ -1,11 +1,23 @@
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const logger = require("../config/logger");
-const { Tasks } = require("../models");
+const { Tasks, Service } = require("../models");
 const { userService } = require(".");
 
-const createTask = async (data) => {
+const createTask = async (userId, bodyData) => {
+  const user = await userService.getUserById(userId);
+  const service = await Service.findOne({ _id: bodyData.serviceId });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
+  }
 
+  const data = {
+    ...bodyData,
+    userId: user._id,
+  };
   const task = await Tasks.create(data);
   return task;
 };
@@ -18,7 +30,7 @@ const queryTasks = async (filter, options) => {
   const totalPages = Math.ceil(count / limit); // Calculate total pages
   const skip = (page - 1) * limit; // Calculate skip value
 
-  const crews = await Tasks.find(filter)
+  const crews = await Tasks.find(filter);
 
   const result = {
     data: crews,
@@ -67,11 +79,10 @@ const updateTaskById = async (id, bodyData, image) => {
   return task;
 };
 
-
 module.exports = {
   createTask,
   queryTasks,
   getTaskById,
   deleteTaskById,
-  updateTaskById
+  updateTaskById,
 };

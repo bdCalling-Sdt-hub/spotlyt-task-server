@@ -28,12 +28,18 @@ const taskSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["accepted", "rejected", "pending"],
+      enum: ["completed", "failed", "pending"],
       default: "pending",
     },
     timeline: {
-      type: Object,
-      required: false,
+      start: {
+        type: Date,
+        required: false,
+      },
+      end: {
+        type: Date,
+        required: false,
+      },
     },
     quantity: {
       type: Number,

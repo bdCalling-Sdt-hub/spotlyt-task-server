@@ -3,52 +3,17 @@ const pick = require("../utils/pick");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const response = require("../config/response");
-const { crewService } = require("../services");
+const { crewService, tasksService } = require("../services");
 const unlinkImage = require("../common/unlinkImage");
 const { Service } = require("../models");
 
 const createTask = catchAsync(async (req, res) => {
-  // console.log(req.body);
-
-  const { crewName, sessions, crewLeaders,affiliations,location,description } = req.body;
-
-  // Parse session and crewLeaders from strings to arrays
-  const parsedSession = JSON.parse(sessions);
-  const parsedCrewLeaders = JSON.parse(crewLeaders);
-  const parsedAffiliations = JSON.parse(affiliations);
-
-  const crewData = {
-    crewName,
-    sessions: parsedSession,
-    crewLeaders: parsedCrewLeaders,
-    affiliations: parsedAffiliations,
-    location,
-    description
-  };
-
-  // console.log(crewData);
-
-  if (req.user) {
-    crewData.userId = req.user._id;
-  }
-
-  if (!req.file) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Image is required");
-  }
-
-  if (req.file) {
-    crewData.image = {
-      url: "/uploads/crews/" + req.file.filename,
-      path: req.file.path,
-    };
-  }
-
-  const crew = await crewService.createCrew(crewData);
+  const task = await tasksService.createTask(req.user.id,req.body);
   res.status(httpStatus.CREATED).json(response({
     message: "Task Created Successfully",
     status: "OK",
     statusCode: httpStatus.CREATED,
-    data: crew,
+    data: task,
   }));
 });
 
