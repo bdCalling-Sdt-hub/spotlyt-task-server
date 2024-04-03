@@ -1,36 +1,52 @@
 const mongoose = require("mongoose");
 const { toJSON, paginate } = require("./plugins");
 
-const crewSchema = new mongoose.Schema(
+const taskSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is must be Required"],
+      required: true,
+    },
+    taskLink: {
+      type: String,
+      required: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: false,
+      required: true,
     },
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Service",
+      required: true,
+    },
+    paymentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
       required: false,
     },
-    taskLink: {
+    status: {
       type: String,
+      enum: ["accepted", "rejected", "pending"],
+      default: "pending",
+    },
+    timeline: {
+      type: Object,
       required: false,
     },
-    status:{
-      type: String,
+    quantity: {
+      type: Number,
       required: false,
-      enum: ['accepted', 'rejected', 'pending'], default: 'pending'
     },
-  
+    price: {
+      type: Number,
+      required: false,
+    },
   },
   { timestamps: true }
 );
 
-crewSchema.plugin(paginate);
+taskSchema.plugin(paginate);
 
-module.exports = mongoose.model("Crew", crewSchema);
+module.exports = mongoose.model("Task", taskSchema);

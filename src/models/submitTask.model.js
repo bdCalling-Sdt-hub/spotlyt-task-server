@@ -1,13 +1,9 @@
 const mongoose = require("mongoose");
 const { toJSON, paginate } = require("./plugins");
 
-const referralSchema = new mongoose.Schema(
+const submitTaskSchema = new mongoose.Schema(
   {
     name: {
-      type: String,
-      required: true,
-    },
-    taskLink: {
       type: String,
       required: true,
     },
@@ -16,9 +12,9 @@ const referralSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    serviceId: {
+    taskId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Service",
+      ref: "Task",
       required: true,
     },
     status: {
@@ -30,10 +26,6 @@ const referralSchema = new mongoose.Schema(
       type: Object,
       required: false,
     },
-    quantity: {
-      type: Number,
-      required: false,
-    },
     price: {
       type: Number,
       required: false,
@@ -42,6 +34,6 @@ const referralSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-referralSchema.plugin(paginate);
+submitTaskSchema.plugin(paginate);
 
-module.exports = mongoose.model("Referral", referralSchema);
+module.exports = mongoose.model("SubmitTask", submitTaskSchema);
