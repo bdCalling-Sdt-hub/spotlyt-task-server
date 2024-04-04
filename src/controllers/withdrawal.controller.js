@@ -11,7 +11,10 @@ const createWithdrawal = catchAsync(async (req, res) => {
 });
 
 const getWithdrawals = catchAsync(async (req, res) => {
-    const result = await withdrawalService.queryWithdrawals(req.query.type);
+    const filter = pick(req.query, ["name", "status", "gender"]);
+    const options = pick(req.query, ["sortBy", "limit", "page"]);
+    const result = await withdrawalService.queryWithdrawals(req.query.type, filter, options);
+    console.log(result);
     res.status(httpStatus.OK).json(response({ message:"Withdrawal", status: "OK", statusCode:httpStatus.OK , data: result}));
 });
 

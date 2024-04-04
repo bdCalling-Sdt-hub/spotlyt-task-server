@@ -50,16 +50,17 @@ const withdrawalCancel = async (withdrawalId) => {
   return withdrawal;
 };
 
-const queryWithdrawals = async (status) => {
-  if (status) {
-    const withdrawals = await Withdrawal.find({ status })
-      .populate("userId")
-      .sort({ createdAt: -1 });
-    return withdrawals;
-  }
-  const withdrawals = await Withdrawal.find({})
-    .populate("userId")
-    .sort({ createdAt: -1 });
+const queryWithdrawals = async (status,filter,options) => {
+
+    if(status){
+      filter.status = status
+    }
+
+  const withdrawals = await Withdrawal.paginate(filter,options, {
+    page: 1,
+    limit: 10,
+    sort: { createdAt: -1 },
+  })
   return withdrawals;
 };
 
