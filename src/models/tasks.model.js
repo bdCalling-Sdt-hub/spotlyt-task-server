@@ -16,6 +16,11 @@ const taskSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    type: {
+      type: String,
+      enum: ["socialMedia", "video","corporate"],
+      required: true,
+    },
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Service",

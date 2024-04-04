@@ -9,6 +9,7 @@ const termsRoute = require("./terms.routes");
 const privacyRoute = require("./privacy.routes");
 const aboutRoute = require("./about.routes");
 const withdrawalRoute = require("./withdrawal.routes");
+const paymentRoute = require("./payment.routes");
 
 const router = express.Router();
 
@@ -44,6 +45,10 @@ const defaultRoutes = [
   {
     path: "/withdrawal",
     route: withdrawalRoute,
+  },
+  {
+    path: "/payment",
+    route: paymentRoute,
   },
 ];
 

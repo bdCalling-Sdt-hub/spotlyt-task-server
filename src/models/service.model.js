@@ -19,6 +19,7 @@ const categorySchema = new Schema({
 const mainSchema = new Schema({
   id: String,
   name: String,
+  type: String,
   description: [String],
   Categories: [categorySchema]
 });

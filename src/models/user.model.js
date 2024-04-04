@@ -78,6 +78,7 @@ const userSchema = mongoose.Schema(
     address: {
       type: String,
       required: false,
+      default: "",
     },
     oneTimeCode: {
       type: String,

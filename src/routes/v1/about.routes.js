@@ -8,7 +8,7 @@ const router = express.Router();
 
 router
     .route('/')
-    .post(auth('admin'),  aboutController.createAbout)
+    .post(auth('admin'), aboutController.createAbout)
     .get( aboutController.getAbouts)
 
 

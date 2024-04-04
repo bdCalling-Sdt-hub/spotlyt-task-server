@@ -38,6 +38,7 @@ const serviceData = [
   {
     id: 1,
     name: "Social Media",
+    type: "socialMedia",
     description: [
       "REQUEST LIKES",
       "REQUEST FOLLOWERS",
@@ -129,6 +130,7 @@ const serviceData = [
   {
     id: 2,
     name: "Video",
+    type: "video",
     description: [
       "REQUEST VIEWS",
       "REQUEST LIKES",
@@ -167,6 +169,7 @@ const serviceData = [
   {
     id: 3,
     name: "Corporate",
+    type: "corporate",
     description: [
       "SIGN UP TO SERVICES",
       "APP DOWNLOADS",
