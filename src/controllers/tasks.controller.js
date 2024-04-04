@@ -4,6 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 const response = require("../config/response");
 const { tasksService } = require("../services");
 const { Service } = require("../models");
+const ApiError = require("../utils/ApiError");
 
 const createTask = catchAsync(async (req, res) => {
   const task = await tasksService.createTask(req.user.id, req.body);
@@ -48,8 +49,6 @@ const getTasks = catchAsync(async (req, res) => {
   );
 });
 
-
-
 const deleteTask = catchAsync(async (req, res) => {
   const blog = await crewService.deleteCrewById(req.params.crewId);
   res.status(httpStatus.OK).json(
@@ -75,8 +74,7 @@ const homeServiceList = catchAsync(async (req, res) => {
 });
 
 const getAdminTasks = catchAsync(async (req, res) => {
-
-  const result = await tasksService.getAdminTasks(req.query.type)
+  const result = await tasksService.getAdminTasks(req.query.type);
   res.status(httpStatus.OK).json(
     response({
       message: "All Tasks",
@@ -88,7 +86,85 @@ const getAdminTasks = catchAsync(async (req, res) => {
 });
 
 const taskHome = catchAsync(async (req, res) => {
-  const result = await tasksService.taskHome(req.user.id, req.query.type, req.query.page, req.query.limit);
+  const result = await tasksService.taskHome(
+    req.user.id,
+    req.query.type,
+    req.query.page,
+    req.query.limit
+  );
+  res.status(httpStatus.OK).json(
+    response({
+      message: "All Tasks",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: result,
+    })
+  );
+});
+
+const taskRegister = catchAsync(async (req, res) => {
+  const result = await tasksService.taskRegister(
+  req.user.id,req.body
+  );
+  res.status(httpStatus.OK).json(
+    response({
+      message: "All Tasks",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: result,
+    })
+  );
+});
+
+const taskSubmit = catchAsync(async (req, res) => {
+  if (!req.files) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Please upload images");
+  }
+
+  const image = [];
+  if (req.files) {
+    req.files.forEach((file) => {
+      const url = `/uploads/submitTask/${file.filename}`;
+      image.push({
+        url,
+        path: file.filename,
+      });
+      // console.log(files);
+    });
+  }
+
+  if (!image) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Please upload images");
+  } else {
+    const result = await tasksService.taskSubmit(req.user.id, req.body.submitTaskId,image);
+    res.status(httpStatus.OK).json(
+      response({
+        message: "All Tasks",
+        status: "OK",
+        statusCode: httpStatus.OK,
+        data: result,
+      })
+    );
+  }
+
+  // const result = await tasksService.taskSubmit(req.user.id, req.query.type, req.query.page, req.query.limit);
+  // res.status(httpStatus.OK).json(
+  //   response({
+  //     message: "All Tasks",
+  //     status: "OK",
+  //     statusCode: httpStatus.OK,
+  //     data: result,
+  //   })
+  // );
+});
+
+const getEmployeeTasks = catchAsync(async (req, res) => {
+  const result = await tasksService.getEmployeeTasks(
+    req.user.id,
+    req.query.type,
+    req.query.page,
+    req.query.limit
+  );
   res.status(httpStatus.OK).json(
     response({
       message: "All Tasks",
@@ -106,5 +182,8 @@ module.exports = {
   deleteTask,
   homeServiceList,
   getAdminTasks,
-  taskHome
+  taskHome,
+  taskRegister,
+  taskSubmit,
+  getEmployeeTasks,
 };

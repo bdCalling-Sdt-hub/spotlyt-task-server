@@ -19,16 +19,22 @@ const submitTaskSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["accepted", "rejected", "pending"],
+      enum: ["accepted", "rejected", "pending",'submitted'],
       default: "pending",
-    },
-    registerData: {
-      type: Object,
-      required: false,
     },
     price: {
       type: Number,
       required: false,
+    },
+    image:{
+      type: Object,
+      required: false,
+      default: [
+        {
+          url: `null`,
+          path: "null",
+        },
+      ],
     },
   },
   { timestamps: true }

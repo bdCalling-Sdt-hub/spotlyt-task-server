@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const logger = require("../config/logger");
-const { Tasks, Service } = require("../models");
+const { Tasks, Service, SubmitTask } = require("../models");
 const { userService } = require(".");
 
 const createTask = async (userId, bodyData) => {
@@ -72,7 +72,7 @@ const getAdminTasks = async (type) => {
   return task;
 };
 const taskHome = async (userId, type, page = 1, limit = 10) => {
-  console.log(type)
+  const mySubmitTask = await SubmitTask.find({ userId });
   const user = await userService.getUserById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -80,7 +80,8 @@ const taskHome = async (userId, type, page = 1, limit = 10) => {
 
   let query = {
     quantity: { $gt: 0 },
-    status: "pending"
+    status: "pending",
+    _id: { $nin: mySubmitTask.map((task) => task.taskId) },
   };
 
   // Get the current date without the time component
@@ -113,6 +114,8 @@ const taskHome = async (userId, type, page = 1, limit = 10) => {
     .limit(limit)
     .sort({ createdAt: -1 });
 
+  
+
   return {
     tasks,
     page,
@@ -122,8 +125,44 @@ const taskHome = async (userId, type, page = 1, limit = 10) => {
   };
 };
 
+const taskRegister = async (userId, body) => {
+  const user = await userService.getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  if (!user.nidStatus === "approved") {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "Please submitted Nid for approval"
+    );
+  }
+  const data = {
+    ...body,
+    userId: user._id,
+  };
+  const task = await SubmitTask.create(data);
+  return task;
+};
 
-
+const taskSubmit = async (userId, submitTaskId, image) => {
+  const user = await userService.getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  const submitTask = await SubmitTask.findById({ _id: submitTaskId });
+  if (!submitTask) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
+  }
+  if (submitTask.status !== "pending") {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Already submitted");
+  }
+  Object.assign(submitTask, {
+    image,
+    status: "submitted",
+  });
+  await submitTask.save();
+  return submitTask;
+};
 
 module.exports = {
   createTask,
@@ -133,4 +172,6 @@ module.exports = {
   updateTaskById,
   getAdminTasks,
   taskHome,
+  taskRegister,
+  taskSubmit,
 };
