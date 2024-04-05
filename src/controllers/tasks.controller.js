@@ -74,7 +74,7 @@ const homeServiceList = catchAsync(async (req, res) => {
 });
 
 const getAdminTasks = catchAsync(async (req, res) => {
-  const result = await tasksService.getAdminTasks(req.query.type);
+  const result = await tasksService.getAdminTasks(req.user.id,req.query.type,req.query.page,req.query.limit);
   res.status(httpStatus.OK).json(
     response({
       message: "All Tasks",

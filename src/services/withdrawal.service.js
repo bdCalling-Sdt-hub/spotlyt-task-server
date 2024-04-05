@@ -36,6 +36,9 @@ const createWithdrawal = async (userId, body) => {
 const withdrawalCancel = async (withdrawalId) => {
   const withdrawal = await Withdrawal.findOne({ _id: withdrawalId });
   const user = await userService.getUserById(withdrawal.userId);
+  if(withdrawal.status === "Completed") {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Withdrawal already completed");
+  }
   if (!withdrawal) {
     throw new ApiError(httpStatus.NOT_FOUND, "Withdrawal not found");
   }

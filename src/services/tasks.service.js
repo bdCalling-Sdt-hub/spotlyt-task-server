@@ -67,10 +67,38 @@ const updateTaskById = async (id, bodyData, image) => {
   return task;
 };
 
-const getAdminTasks = async (type) => {
-  const task = await Tasks.find({ type }).populate("userId serviceId");
-  return task;
+const getAdminTasks = async (userId, type, page, limit) => {
+  const pageNumber = parseInt(page) || 1;
+  const limitPerPage = parseInt(limit) || 10; // Default limit to 10 if not provided
+  const skip = (pageNumber - 1) * limitPerPage;
+
+  // Get total count of documents without pagination
+  const totalCount = await Tasks.countDocuments({ type });
+
+  // Calculate total pages
+  const totalPages = Math.ceil(totalCount / limitPerPage);
+
+  // Use aggregation framework to include pagination
+  const tasks = await Tasks.aggregate([
+    { $match: { type } },
+    { $skip: skip },
+    { $limit: limitPerPage },
+    { $lookup: { from: "users", localField: "userId", foreignField: "_id", as: "user" } },
+    { $unwind: "$user" },
+    { $lookup: { from: "services", localField: "serviceId", foreignField: "_id", as: "service" } },
+    { $unwind: "$service" }
+  ]);
+
+  return {
+    tasks,
+    page: pageNumber,
+    limit: limitPerPage,
+    totalPages,
+    totalResults: totalCount,
+  };
 };
+
+
 const taskHome = async (userId, type, page = 1, limit = 10) => {
   const mySubmitTask = await SubmitTask.find({ userId });
   const user = await userService.getUserById(userId);
