@@ -10,7 +10,7 @@ const uploadUsers = userFileUploadMiddleware(UPLOADS_FOLDER_SUBMIT_TASK);
 const router = express.Router();
 
 router.route("/service").get(auth("client"), taskController.homeServiceList);
-router.route("/admin").get(auth("client"), taskController.getAdminTasks);
+router.route("/admin").get(auth("admin"), taskController.getAdminTasks);
 router.route("/home").get(auth("employee"), taskController.taskHome);
 router
   .route("/register")

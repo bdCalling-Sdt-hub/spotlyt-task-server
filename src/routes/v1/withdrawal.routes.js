@@ -14,7 +14,7 @@ router
 router
   .route("/:withdrawalId")
   .patch(auth("common"), withdrawalController.withdrawalCancel)
-  .patch(auth("common"), withdrawalController.withdrawalApprove)
+  .post(auth("common"), withdrawalController.withdrawalApprove)
   
 
 module.exports = router;
