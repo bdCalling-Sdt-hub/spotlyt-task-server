@@ -12,16 +12,19 @@ const router = express.Router();
 router.route("/service").get(auth("client"), taskController.homeServiceList);
 router.route("/admin").get(auth("admin"), taskController.getAdminTasks);
 router.route("/home").get(auth("employee"), taskController.taskHome);
+router.route("/register/admin").get( taskController.getSubmittedTasks);
+router.route("/register/single").get( taskController.getRegisterSingleTask);
 router
   .route("/register")
   .post(auth("employee"), taskController.taskRegister)
+  .get(auth("employee"), taskController.getEmployeeTasks)
   .patch(
     auth("employee"),
     [uploadUsers.array("image")],
     convertHeicToPngMiddleware(UPLOADS_FOLDER_SUBMIT_TASK),
     taskController.taskSubmit
   )
-  .get(auth("employee"), taskController.getEmployeeTasks);
+  .put( taskController.submitTaskUpdate);
 
 router
   .route("/")

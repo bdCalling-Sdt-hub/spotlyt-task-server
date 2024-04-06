@@ -135,6 +135,18 @@ const nidVerifySubmitList = catchAsync(async (req, res) => {
   )
 });
 
+const interestList = catchAsync(async (req, res) => {
+  const user = await userService.interestList();
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User Interest List",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: user
+    })
+  )
+});
+
 module.exports = {
   createUser,
   getUsers,
@@ -144,5 +156,7 @@ module.exports = {
   verifyNid,
   nidVerifyApproval,
   nidVerifyReject,
-  nidVerifySubmitList
+  nidVerifySubmitList,
+  interestList
+  
 };

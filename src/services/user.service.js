@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { User } = require("../models");
+const { User, Interest } = require("../models");
 const ApiError = require("../utils/ApiError");
 const { sendEmailVerification } = require("./email.service");
 const unlinkImages = require("../common/unlinkImage");
@@ -201,6 +201,11 @@ const nidVerifySubmitList = async () => {
   return users;
 };
 
+const interestList = async () => {
+  const interest = await Interest.find({});
+  return interest;
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -213,4 +218,5 @@ module.exports = {
   nidVerifyApproval,
   nidVerifyReject,
   nidVerifySubmitList,
+  interestList
 };

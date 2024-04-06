@@ -175,6 +175,47 @@ const getEmployeeTasks = catchAsync(async (req, res) => {
   );
 });
 
+const getSubmittedTasks= catchAsync(async (req, res) => {
+  const result = await tasksService.getSubmittedTasks(
+    req.query.status,
+    req.query.page,
+    req.query.limit
+  );
+  res.status(httpStatus.OK).json(
+    response({
+      message: "All Tasks",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: result,
+    })
+  );
+});
+
+const submitTaskUpdate = catchAsync(async (req, res) => {
+  const result = await tasksService.submitTaskUpdate(req.query.id,req.body);
+  res.status(httpStatus.OK).json(
+    response({
+      message: "All Tasks",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: result,
+    })
+  );
+});
+
+const getRegisterSingleTask = catchAsync(async (req, res) => {
+  const result = await tasksService.getRegisterSingleTask(req.query.id);
+  res.status(httpStatus.OK).json(
+    response({
+      message: "All Tasks",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: result,
+    })
+  );
+});
+
+
 module.exports = {
   createTask,
   getTask,
@@ -186,4 +227,7 @@ module.exports = {
   taskRegister,
   taskSubmit,
   getEmployeeTasks,
+  getSubmittedTasks,
+  submitTaskUpdate,
+  getRegisterSingleTask
 };

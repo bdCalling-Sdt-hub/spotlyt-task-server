@@ -83,10 +83,24 @@ const getAdminTasks = async (userId, type, page, limit) => {
     { $match: { type } },
     { $skip: skip },
     { $limit: limitPerPage },
-    { $lookup: { from: "users", localField: "userId", foreignField: "_id", as: "user" } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
     { $unwind: "$user" },
-    { $lookup: { from: "services", localField: "serviceId", foreignField: "_id", as: "service" } },
-    { $unwind: "$service" }
+    {
+      $lookup: {
+        from: "services",
+        localField: "serviceId",
+        foreignField: "_id",
+        as: "service",
+      },
+    },
+    { $unwind: "$service" },
   ]);
 
   return {
@@ -97,7 +111,6 @@ const getAdminTasks = async (userId, type, page, limit) => {
     totalResults: totalCount,
   };
 };
-
 
 const taskHome = async (userId, type, page = 1, limit = 10) => {
   const mySubmitTask = await SubmitTask.find({ userId });
@@ -141,8 +154,6 @@ const taskHome = async (userId, type, page = 1, limit = 10) => {
     .skip(skip)
     .limit(limit)
     .sort({ createdAt: -1 });
-
-  
 
   return {
     tasks,
@@ -192,6 +203,70 @@ const taskSubmit = async (userId, submitTaskId, image) => {
   return submitTask;
 };
 
+const getEmployeeTasks = async (userId, type, page, limit) => {
+  const user = await userService.getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  const pageNumber = parseInt(page) || 1;
+  const limitPerPage = parseInt(limit) || 10; // Default limit to 10 if not provided
+  const skip = (pageNumber - 1) * limitPerPage;
+  const totalCount = await SubmitTask.countDocuments({ type, userId });
+  const totalPages = Math.ceil(totalCount / limitPerPage);
+  const tasks = await SubmitTask.find({ type, userId })
+    .populate("userId")
+    .populate("taskId")
+    .skip(skip)
+    .limit(limitPerPage)
+    .sort({ createdAt: -1 });
+  return {
+    tasks,
+    page: pageNumber,
+    limit: limitPerPage,
+    totalPages,
+    totalResults: totalCount,
+  };
+};
+
+const getSubmittedTasks = async (status, page, limit) => {
+  const pageNumber = parseInt(page) || 1;
+  const limitPerPage = parseInt(limit) || 10; // Default limit to 10 if not provided
+  const skip = (pageNumber - 1) * limitPerPage;
+  const totalCount = await SubmitTask.countDocuments({ status });
+  const totalPages = Math.ceil(totalCount / limitPerPage);
+  const tasks = await SubmitTask.find({ status })
+    .populate("userId")
+    .populate("taskId")
+    .skip(skip)
+    .limit(limitPerPage)
+    .sort({ createdAt: -1 });
+  return {
+    tasks,
+    page: pageNumber,
+    limit: limitPerPage,
+    totalPages,
+    totalResults: totalCount,
+  };
+};
+
+const submitTaskUpdate = async (taskId, body) => {
+  const submitTask = await SubmitTask.findById({ _id: taskId });
+  if (!submitTask) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
+  }
+  Object.assign(submitTask, body);
+  await submitTask.save();
+  return submitTask;
+};
+
+const getRegisterSingleTask = async (taskId) => {
+  const submitTask = await SubmitTask.findById({ _id: taskId });
+  if (!submitTask) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
+  }
+  return submitTask;
+};
+
 module.exports = {
   createTask,
   queryTasks,
@@ -202,4 +277,8 @@ module.exports = {
   taskHome,
   taskRegister,
   taskSubmit,
+  getEmployeeTasks,
+  getSubmittedTasks,
+  submitTaskUpdate,
+  getRegisterSingleTask
 };
