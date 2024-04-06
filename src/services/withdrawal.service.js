@@ -91,8 +91,6 @@ const withdrawalApprove = async (withdrawalId) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Withdrawal not found");
   }
   withdrawal.status = "Completed";
-  user.rand = user.rand - withdrawal.withdrawalAmount;
-  await user.save();
   await withdrawal.save();
   return withdrawal;
 };
