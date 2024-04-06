@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const { Service, User } = require("../models");
+const { Service, User, Interest } = require("../models");
+const interests = require("../db/interest.json");
 
 // Sample data
 const usersData = [
@@ -239,6 +240,15 @@ const seedSubscriptions = async () => {
     console.error("Error seeding Services:", err);
   }
 };
+const seedInterest = async () => {
+  try {
+    await Interest.deleteMany();
+    await Interest.insertMany(interests);
+    console.log("Interests seeded successfully!");
+  } catch (err) {
+    console.error("Error seeding Interests:", err);
+  }
+};
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URL);
@@ -249,6 +259,7 @@ const seedDatabase = async () => {
     await dropDatabase();
     await seedUsers();
     await seedSubscriptions();
+    await seedInterest();
     console.log("--------------> Database seeding completed <--------------");
   } catch (err) {
     console.error("Error seeding database:", err);
