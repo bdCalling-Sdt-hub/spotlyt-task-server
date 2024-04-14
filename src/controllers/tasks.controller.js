@@ -161,7 +161,7 @@ const taskSubmit = catchAsync(async (req, res) => {
 const getEmployeeTasks = catchAsync(async (req, res) => {
   const result = await tasksService.getEmployeeTasks(
     req.user.id,
-    req.query.type,
+    req.query.status,
     req.query.page,
     req.query.limit
   );

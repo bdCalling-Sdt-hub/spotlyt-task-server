@@ -203,7 +203,7 @@ const taskSubmit = async (userId, submitTaskId, image) => {
   return submitTask;
 };
 
-const getEmployeeTasks = async (userId, type, page, limit) => {
+const getEmployeeTasks = async (userId, status, page, limit) => {
   const user = await userService.getUserById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -211,9 +211,9 @@ const getEmployeeTasks = async (userId, type, page, limit) => {
   const pageNumber = parseInt(page) || 1;
   const limitPerPage = parseInt(limit) || 10; // Default limit to 10 if not provided
   const skip = (pageNumber - 1) * limitPerPage;
-  const totalCount = await SubmitTask.countDocuments({ type, userId });
+  const totalCount = await SubmitTask.countDocuments({ status, userId });
   const totalPages = Math.ceil(totalCount / limitPerPage);
-  const tasks = await SubmitTask.find({ type, userId })
+  const tasks = await SubmitTask.find({ status, userId })
     .populate("userId")
     .populate("taskId")
     .skip(skip)
