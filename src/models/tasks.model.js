@@ -26,9 +26,8 @@ const taskSchema = new mongoose.Schema(
       ref: "Service",
       required: true,
     },
-    paymentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Payment",
+    transactionId: {
+      type: String,
       required: false,
     },
     status: {

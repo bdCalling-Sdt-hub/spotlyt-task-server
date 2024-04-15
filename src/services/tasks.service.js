@@ -3,9 +3,10 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../config/logger");
 const { Tasks, Service, SubmitTask } = require("../models");
 const { userService } = require(".");
+const { createPayment } = require("./payment.service");
 
 const createTask = async (userId, bodyData) => {
-  const user = await userService.getUserById(userId);
+  const user = await userService.getUserById(userId); // Use userService
   const service = await Service.findOne({ _id: bodyData.serviceId });
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -20,6 +21,19 @@ const createTask = async (userId, bodyData) => {
     type: service.type,
   };
   const task = await Tasks.create(data);
+
+  if (task) {
+    const payment = await createPayment({
+      // Use createPayment directly
+      userId,
+      tasksId: task._id,
+      price: bodyData.price * bodyData.quantity,
+      transactionId: bodyData.transactionId,
+    });
+    if (!payment) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Payment is not created");
+    }
+  }
   return task;
 };
 
@@ -280,5 +294,5 @@ module.exports = {
   getEmployeeTasks,
   getSubmittedTasks,
   submitTaskUpdate,
-  getRegisterSingleTask
+  getRegisterSingleTask,
 };

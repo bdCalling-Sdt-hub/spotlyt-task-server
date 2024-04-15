@@ -8,3 +8,4 @@ module.exports.termsService = require('./terms.service');
 module.exports.privacyService = require('./privacy.service');
 module.exports.aboutService = require('./about.service');
 module.exports.withdrawalService = require('./withdrawal.service')
+module.exports.paymentService = require('./payment.service')
