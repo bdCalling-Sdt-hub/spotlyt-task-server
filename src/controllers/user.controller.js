@@ -156,15 +156,17 @@ const userRatioCount = catchAsync(async (req, res) => {
     role: "employee",
   });
 
+  const ratio = [
+    { name: "Client", value: thisMonthClint },
+    { name: "Employee", value: thisMonthEmployee },
+  ];
+
   res.status(httpStatus.OK).json(
     response({
       message: "User Ratio List",
       status: "OK",
       statusCode: httpStatus.OK,
-      data: {
-        thisMonthClint,
-        thisMonthEmployee,
-      },
+      data: ratio,
     })
   );
 });
