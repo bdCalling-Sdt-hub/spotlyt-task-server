@@ -274,7 +274,7 @@ const submitTaskUpdate = async (taskId, body) => {
 };
 
 const getRegisterSingleTask = async (taskId) => {
-  const submitTask = await SubmitTask.findById({ _id: taskId });
+  const submitTask = await SubmitTask.findById({ _id: taskId }).populate("taskId userId");
   if (!submitTask) {
     throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
   }
