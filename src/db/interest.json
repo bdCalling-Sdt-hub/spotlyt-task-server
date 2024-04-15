@@ -1,102 +1,102 @@
 [
     {
         "id": 1,
-        "icon": "/uploads/users/music.svg",
+        "icon": "/uploads/icons/music.svg",
         "title": "Music"
     },
     {
         "id": 2,
-        "icon": "/uploads/users/fitness.svg",
+        "icon": "/uploads/icons/fitness.svg",
         "title": "Fitness"
     },
     {
         "id": 3,
-        "icon": "/uploads/users/food.svg",
+        "icon": "/uploads/icons/food.svg",
         "title": "Food"
     },
     {
         "id": 4,
-        "icon": "/uploads/users/tech.svg",
+        "icon": "/uploads/icons/tech.svg",
         "title": "Tech"
     },
     {
         "id": 5,
-        "icon": "/uploads/users/fashion.svg",
+        "icon": "/uploads/icons/fashion.svg",
         "title": "Fashion"
     },
     {
         "id": 6,
-        "icon": "/uploads/users/travel.svg",
+        "icon": "/uploads/icons/travel.svg",
         "title": "Travel"
     },
     {
         "id": 7,
-        "icon": "/uploads/users/outdoor.svg",
+        "icon": "/uploads/icons/home.svg",
         "title": "Outdoor"
     },
     {
         "id": 8,
-        "icon": "/uploads/users/DIY.svg",
+        "icon": "/uploads/icons/DIY.svg",
         "title": "DIY"
     },
     {
         "id": 9,
-        "icon": "/uploads/users/homess.svg",
+        "icon": "/uploads/icons/home.svg",
         "title": "Houses"
     },
     {
         "id": 10,
-        "icon": "/uploads/users/pet.svg",
+        "icon": "/uploads/icons/pet.svg",
         "title": "Pets"
     },
     {
         "id": 11,
-        "icon": "/uploads/users/movies.svg",
+        "icon": "/uploads/icons/movies.svg",
         "title": "Movies"
     },
     {
         "id": 12,
-        "icon": "/uploads/users/art.svg",
+        "icon": "/uploads/icons/art.svg",
         "title": "Art"
     },
     {
         "id": 13,
-        "icon": "/uploads/users/career.svg",
+        "icon": "/uploads/icons/career.svg",
         "title": "Career"
     },
     {
         "id": 14,
-        "icon": "/uploads/users/sports.svg",
+        "icon": "/uploads/icons/sports.svg",
         "title": "Sports"
     },
     {
         "id": 15,
-        "icon": "/uploads/users/book.svg",
+        "icon": "/uploads/icons/book.svg",
         "title": "Books"
     },
     {
         "id": 16,
-        "icon": "/uploads/users/car.svg",
+        "icon": "/uploads/icons/car.svg",
         "title": "Cars"
     },
     {
         "id": 17,
-        "icon": "/uploads/users/games.svg",
+        "icon": "/uploads/icons/games.svg",
         "title": "Games"
     },
     {
         "id": 18,
-        "icon": "/uploads/users/shooping.svg",
+        "icon": "/uploads/icons/shooping.svg",
         "title": "Shopping"
     },
     {
         "id": 19,
-        "icon": "/uploads/users/finance.svg",
+        "icon": "/uploads/icons/finance.svg",
         "title": "Finance"
     },
     {
         "id": 20,
-        "icon": "/uploads/users/investing.svg",
+        "icon": "/uploads/icons/investing.svg",
         "title": "Investing"
     }
 ]
