@@ -13,6 +13,7 @@ const router = express.Router();
 
 
 router.route("/interest").get(userController.interestList);
+router.route("/ratio").get(userController.userRatioCount);
 router.route("/verifyNid").post(auth("common"), userController.verifyNid);
 router.route("/nidVerifyApproval").post(auth("common"), userController.nidVerifyApproval);
 router.route("/nidVerifyReject").post(auth("common"), userController.nidVerifyReject);

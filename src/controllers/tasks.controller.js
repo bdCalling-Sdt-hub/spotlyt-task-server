@@ -192,7 +192,7 @@ const getSubmittedTasks= catchAsync(async (req, res) => {
 });
 
 const submitTaskUpdate = catchAsync(async (req, res) => {
-  const result = await tasksService.submitTaskUpdate(req.query.id,req.body);
+  const result = await tasksService.submitTaskUpdate(req.query.id,req.query.status);
   res.status(httpStatus.OK).json(
     response({
       message: "All Tasks",

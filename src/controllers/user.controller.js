@@ -5,6 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 const response = require("../config/response");
 const { userService } = require("../services");
 const unlinkImages = require("../common/unlinkImage");
+const { User } = require("../models");
 
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -88,7 +89,7 @@ const deleteUser = catchAsync(async (req, res) => {
 });
 
 const verifyNid = catchAsync(async (req, res) => {
-  const user = await userService.verifyNid( req.user.id,req.body.nidNumber);
+  const user = await userService.verifyNid(req.user.id, req.body.nidNumber);
   res.status(httpStatus.OK).json(
     response({
       message: "User Verified",
@@ -106,9 +107,8 @@ const nidVerifyApproval = catchAsync(async (req, res) => {
       message: "User NID Verify Approved",
       status: "OK",
       statusCode: httpStatus.OK,
-  
     })
-  )
+  );
 });
 
 const nidVerifyReject = catchAsync(async (req, res) => {
@@ -118,9 +118,8 @@ const nidVerifyReject = catchAsync(async (req, res) => {
       message: "User NID Verify Rejected",
       status: "OK",
       statusCode: httpStatus.OK,
-  
     })
-  )
+  );
 });
 
 const nidVerifySubmitList = catchAsync(async (req, res) => {
@@ -130,9 +129,9 @@ const nidVerifySubmitList = catchAsync(async (req, res) => {
       message: "User NID Verify List",
       status: "OK",
       statusCode: httpStatus.OK,
-      data: user
+      data: user,
     })
-  )
+  );
 });
 
 const interestList = catchAsync(async (req, res) => {
@@ -142,9 +141,32 @@ const interestList = catchAsync(async (req, res) => {
       message: "User Interest List",
       status: "OK",
       statusCode: httpStatus.OK,
-      data: user
+      data: user,
     })
-  )
+  );
+});
+
+const userRatioCount = catchAsync(async (req, res) => {
+  const thisMonthClint = await User.countDocuments({
+    createdAt: { $gte: new Date().setMonth(new Date().getMonth() - 1) },
+    role: "client",
+  });
+  const thisMonthEmployee = await User.countDocuments({
+    createdAt: { $gte: new Date().setMonth(new Date().getMonth() - 1) },
+    role: "employee",
+  });
+
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User Ratio List",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: {
+        thisMonthClint,
+        thisMonthEmployee,
+      },
+    })
+  );
 });
 
 module.exports = {
@@ -157,6 +179,6 @@ module.exports = {
   nidVerifyApproval,
   nidVerifyReject,
   nidVerifySubmitList,
-  interestList
-  
+  interestList,
+  userRatioCount,
 };

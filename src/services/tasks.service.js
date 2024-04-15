@@ -263,12 +263,13 @@ const getSubmittedTasks = async (status, page, limit) => {
   };
 };
 
-const submitTaskUpdate = async (taskId, body) => {
+const submitTaskUpdate = async (taskId, status) => {
   const submitTask = await SubmitTask.findById({ _id: taskId });
   if (!submitTask) {
     throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
   }
-  Object.assign(submitTask, body);
+
+  Object.assign(submitTask, status);
   await submitTask.save();
   return submitTask;
 };

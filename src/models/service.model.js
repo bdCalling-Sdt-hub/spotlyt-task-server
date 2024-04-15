@@ -5,7 +5,9 @@ const { Schema } = mongoose;
 const serviceSchema = new Schema({
   name: String,
   price: Number,
-  sobTitle: String
+  sobTitle: String,
+  min: Number,
+  max: Number,
 });
 
 // Define the category schema

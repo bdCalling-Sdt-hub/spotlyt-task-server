@@ -5,12 +5,13 @@ const paymentController = require("../../controllers/payment.controller");
 
 const router = express.Router();
 
-
+router.route("/status").get(paymentController.allStatus);
+router.route("/chart").get(paymentController.paymentChart);
 router
   .route("/")
   .post(auth("employee"), paymentController.processPayment)
-//   .get(auth("client"), taskController.getTasks);
+  .get(auth("admin"), paymentController.getPayments);
 
-// router.route("/:taskId").get(auth("common"), taskController.getTask);
+router.route("/:paymentId").get(auth("common"), paymentController.getPayment);
 
 module.exports = router;

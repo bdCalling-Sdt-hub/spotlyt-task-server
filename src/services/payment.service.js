@@ -8,6 +8,19 @@ const createPayment  = async (bodyData) => {
   return payment;
 };
 
+const getPayments = async (filter, options) => {
+  options.populate="tasksId,userId fullName image";
+  const payments = await Payment.paginate(filter, options);
+  return payments;
+};
+const getPaymentById = async (id) => {
+  const payment = await Payment.findById(id).populate("tasksId userId");
+  return payment;
+};
+
+
 module.exports = {
     createPayment ,
+    getPayments,
+    getPaymentById
 };

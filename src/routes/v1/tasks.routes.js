@@ -24,7 +24,7 @@ router
     convertHeicToPngMiddleware(UPLOADS_FOLDER_SUBMIT_TASK),
     taskController.taskSubmit
   )
-  .put( taskController.submitTaskUpdate);
+  .put(taskController.submitTaskUpdate);
 
 router
   .route("/")
