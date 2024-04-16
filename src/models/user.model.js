@@ -93,6 +93,10 @@ const userSchema = mongoose.Schema(
       required: false,
       default:"",
     },
+    referralClaimed: {
+      type: Boolean,
+      default: false,
+    },
     isEmailVerified: {
       type: Boolean,
       default: false,

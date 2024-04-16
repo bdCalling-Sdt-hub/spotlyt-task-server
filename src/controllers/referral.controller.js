@@ -34,7 +34,7 @@ const claimed = catchAsync(async (req, res) => {
   });
 
   // Update user and claimedUser
-  user.referralCode = referralCode;
+  user.claimedReferralCode = referralCode;
   user.referralClaimed = true;
   await user.save();
 

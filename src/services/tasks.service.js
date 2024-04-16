@@ -4,6 +4,8 @@ const logger = require("../config/logger");
 const { Tasks, Service, SubmitTask, User } = require("../models");
 const { userService } = require(".");
 const { createPayment } = require("./payment.service");
+const { addNotification, getALLNotificationAdmin } = require("./notification.service");
+const pick = require("../utils/pick");
 
 const createTask = async (userId, bodyData) => {
   const user = await userService.getUserById(userId); // Use userService
@@ -277,12 +279,36 @@ const submitTaskUpdate = async (taskId, status) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-  if(task.quantity === 0){
+  if (task.quantity === 0) {
     throw new ApiError(httpStatus.NOT_FOUND, "Task is already completed");
   }
 
   if (status === "accepted") {
     if (task.quantity > 1) {
+      const newNotification = {
+        receiverId: submitTask.userId,
+        role: "client",
+        message: `Your task ${task.name} has been accepted.`,
+      };
+
+      const result = await addNotification(newNotification);
+      const messageEvent = `client-notification:${submitTask.userId}`;
+      const filter = {};
+      const options = {};
+      if (!options.sortBy) {
+        options.sortBy = "createdAt:desc";
+      }
+      const notifications = await getALLNotificationAdmin(
+        filter,
+        options
+      );
+      io.emit(messageEvent, {
+        message: "Notifications",
+        status: "OK",
+        statusCode: httpStatus.OK,
+        data: notifications,
+      });
+
       Object.assign(task, {
         quantity: task.quantity - 1,
       });
@@ -299,7 +325,7 @@ const submitTaskUpdate = async (taskId, status) => {
     await user.save();
   }
 
-  Object.assign(submitTask, status);
+  submitTask.status = status;
   await submitTask.save();
   return submitTask;
 };
