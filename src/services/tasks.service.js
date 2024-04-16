@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const logger = require("../config/logger");
-const { Tasks, Service, SubmitTask } = require("../models");
+const { Tasks, Service, SubmitTask, User } = require("../models");
 const { userService } = require(".");
 const { createPayment } = require("./payment.service");
 
@@ -19,6 +19,7 @@ const createTask = async (userId, bodyData) => {
     ...bodyData,
     userId: user._id,
     type: service.type,
+    count: bodyData.quantity,
   };
   const task = await Tasks.create(data);
 
@@ -265,8 +266,37 @@ const getSubmittedTasks = async (status, page, limit) => {
 
 const submitTaskUpdate = async (taskId, status) => {
   const submitTask = await SubmitTask.findById({ _id: taskId });
+  const user = await User.findById({ _id: submitTask.userId });
+  const task = await Tasks.findById({ _id: submitTask.taskId });
   if (!submitTask) {
     throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
+  }
+  if (!task) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Task not found");
+  }
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  if(task.quantity === 0){
+    throw new ApiError(httpStatus.NOT_FOUND, "Task is already completed");
+  }
+
+  if (status === "accepted") {
+    if (task.quantity > 1) {
+      Object.assign(task, {
+        quantity: task.quantity - 1,
+      });
+    } else {
+      Object.assign(task, {
+        status: "completed",
+        quantity: task.quantity - 1,
+      });
+    }
+    Object.assign(user, {
+      rand: user.rand + submitTask.price,
+    });
+    await task.save();
+    await user.save();
   }
 
   Object.assign(submitTask, status);
@@ -275,7 +305,9 @@ const submitTaskUpdate = async (taskId, status) => {
 };
 
 const getRegisterSingleTask = async (taskId) => {
-  const submitTask = await SubmitTask.findById({ _id: taskId }).populate("taskId userId");
+  const submitTask = await SubmitTask.findById({ _id: taskId }).populate(
+    "taskId userId"
+  );
   if (!submitTask) {
     throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
   }

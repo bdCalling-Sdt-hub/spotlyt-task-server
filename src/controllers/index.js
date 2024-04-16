@@ -5,6 +5,7 @@ module.exports.referralController = require('./referral.controller');
 module.exports.termsController = require('./terms.controller');
 module.exports.privacyController = require('./privacy.controller');
 module.exports.aboutController = require('./about.controller');
+module.exports.notificationController = require('./notification.controller');
 
 
 

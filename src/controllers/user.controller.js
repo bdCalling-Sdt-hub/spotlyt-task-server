@@ -107,6 +107,7 @@ const nidVerifyApproval = catchAsync(async (req, res) => {
       message: "User NID Verify Approved",
       status: "OK",
       statusCode: httpStatus.OK,
+      data: user,
     })
   );
 });

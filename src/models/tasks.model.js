@@ -49,6 +49,10 @@ const taskSchema = new mongoose.Schema(
       type: Number,
       required: false,
     },
+    count: {
+      type: Number,
+      required: false,
+    },
     price: {
       type: Number,
       required: false,
