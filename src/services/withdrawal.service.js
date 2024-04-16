@@ -3,6 +3,7 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../config/logger");
 const { Withdrawal } = require("../models");
 const { userService } = require(".");
+const { addCustomNotification } = require("./notification.service");
 
 const createWithdrawal = async (userId, body) => {
   const user = await userService.getUserById(userId);
@@ -30,6 +31,14 @@ const createWithdrawal = async (userId, body) => {
   await user.save();
 
   const withdrawal = await Withdrawal.create({ ...body, userId });
+  
+  const newNotificationAdmin = {
+    role: "admin",
+    message: `${user.fullName} has sent withdrawn request R${body.withdrawalAmount}.`,
+  };
+
+  await addCustomNotification("admin-notification",'admin',newNotificationAdmin);
+
   return withdrawal;
 };
 
@@ -45,6 +54,13 @@ const withdrawalCancel = async (withdrawalId) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
+  const newNotificationEmployee = {
+    receiverId: withdrawal.userId,
+    role: "employee",
+    message: `Your withdrawal R${withdrawal.withdrawalAmount} has been cancelled.`,
+  };
+
+ await addCustomNotification("employee-notification",withdrawal.userId,newNotificationEmployee);
 
   withdrawal.status = "Failed";
   user.rand = user.rand + withdrawal.withdrawalAmount;
@@ -90,6 +106,14 @@ const withdrawalApprove = async (withdrawalId) => {
   if (!withdrawal) {
     throw new ApiError(httpStatus.NOT_FOUND, "Withdrawal not found");
   }
+  
+  const newNotificationEmployee = {
+    receiverId: withdrawal.userId,
+    role: "employee",
+    message: `Your withdrawal R${withdrawal.withdrawalAmount} has been Completed.`,
+  };
+
+ await addCustomNotification("employee-notification",withdrawal.userId,newNotificationEmployee);
   withdrawal.status = "Completed";
   await withdrawal.save();
   return withdrawal;

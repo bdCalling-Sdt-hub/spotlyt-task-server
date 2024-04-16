@@ -38,6 +38,124 @@ const getNotificationByParticipants = async (participants) => {
   return notification;
 };
 
+// const getALLNotification = async (filter, options, userId) => {
+//   try {
+//     const { page = 1, limit = 10 } = options;
+
+//     // Count total number of notifications
+//     const totalCount = await Notification.countDocuments({
+//       $or: [{ userId }, { receiverId: userId }],
+//       ...filter,
+//     });
+
+//     // Count total number of notifications with viewStatus: false
+//     const unReadCount = await Notification.countDocuments({
+//       $or: [{ userId }, { receiverId: userId }],
+//       viewStatus: false,
+//       ...filter,
+//     });
+
+//     // Calculate total pages
+//     const totalPages = Math.ceil(totalCount / limit);
+
+//     // Determine the number of documents to skip
+//     const skip = (page - 1) * limit;
+
+//     // Perform query to retrieve paginated notifications
+//     const results = await Notification.find({
+//       $or: [{ userId }, { receiverId: userId }],
+//       ...filter,
+//     })
+//       .skip(skip)
+//       .limit(limit)
+//       .sort({ createdAt: -1 });
+
+//     return {
+//       results,
+//       page,
+//       limit,
+//       totalPages,
+//       totalResults: totalCount,
+//       unReadCount,
+//     };
+//   } catch (err) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, err.message);
+//   }
+// };
+
+const getALLNotificationAdmin = async (filter, options) => {
+  try {
+    const notifications = await Notification.paginate(filter, options);
+    const totalUnreadNotifications = await Notification.countDocuments({
+      viewStatus: false,
+    });
+
+    return {
+      notifications,
+      totalUnreadNotifications,
+    };
+  } catch (error) {
+    // Handle error
+    console.error(error);
+    return { notifications: [], totalUnreadNotifications: 0 }; // or throw error or handle as appropriate
+  }
+};
+
+const getALLNotificationAdminSocket = async () => {
+  try {
+    const filter = { role: "admin" };
+    const createdAtFilter = filter.createdAt
+      ? { createdAt: filter.createdAt }
+      : {};
+    const query = {
+      ...filter,
+      ...createdAtFilter,
+    };
+
+    const sortingCriteria = { createdAt: -1 }; // Sort in descending order (newest first)
+
+    const page = 1;
+    const limit = 10;
+
+    const skip = (page - 1) * limit;
+    const updatedOptions = {
+      sort: sortingCriteria,
+      limit,
+      skip,
+    };
+
+    const notifications = await Notification.find(query, null, updatedOptions);
+
+    const totalUnreadNotifications = await Notification.countDocuments({
+      ...query,
+      viewStatus: false,
+    });
+
+    return {
+      notifications,
+      totalUnreadNotifications,
+    };
+  } catch (error) {
+    // Handle error
+    console.error(error);
+    return { notifications: [], totalUnreadNotifications: 0 }; // or throw error or handle as appropriate
+  }
+};
+
+const deleteNotificationById = async (id) => {
+  const notifications = await Notification.findByIdAndDelete(id);
+  return notifications;
+};
+
+const readNotification = async (id) => {
+  const notifications = await Notification.findByIdAndUpdate(id, {
+    viewStatus: true,
+  });
+  if (!notifications) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Notification not found");
+  }
+  return notifications;
+};
 
 const getALLNotification = async (filter, options, userId) => {
   try {
@@ -84,80 +202,22 @@ const getALLNotification = async (filter, options, userId) => {
   }
 };
 
+const addCustomNotification = async (eventName, userId, notifications) => {
+  const messageEvent = `${eventName}::${userId}`;
+  const result = await addNotification(notifications);
 
-
-const getALLNotificationAdmin = async (filter, options) => {
-  try {
-    const notifications = await Notification.paginate(filter, options);
-    const totalUnreadNotifications = await Notification.countDocuments({
-      viewStatus: false,
-    });
-
-    return {
-      notifications,
-      totalUnreadNotifications,
-    };
-  } catch (error) {
-    // Handle error
-    console.error(error);
-    return { notifications: [], totalUnreadNotifications: 0 }; // or throw error or handle as appropriate
-  }
-};
-
-const getALLNotificationAdminSocket = async () => {
-  try {
-    const filter = { role: "admin" };
-    const createdAtFilter = filter.createdAt ? { createdAt: filter.createdAt } : {};
-    const query = {
-      ...filter,
-      ...createdAtFilter,
-    };
-
-    const sortingCriteria = { createdAt: -1 }; // Sort in descending order (newest first)
-
-    const page = 1;
-    const limit = 10;
-
-    const skip = (page - 1) * limit;
-    const updatedOptions = {
-      sort: sortingCriteria,
-      limit,
-      skip,
-    };
-
-    const notifications = await Notification.find(query, null, updatedOptions);
-
-    const totalUnreadNotifications = await Notification.countDocuments({
-      ...query,
-      viewStatus: false,
-    });
-
-    return {
-      notifications,
-      totalUnreadNotifications,
-    };
-  } catch (error) {
-    // Handle error
-    console.error(error);
-    return { notifications: [], totalUnreadNotifications: 0 }; // or throw error or handle as appropriate
-  }
-};
-
-
-const deleteNotificationById = async (id) => {
-  const notifications = await Notification.findByIdAndDelete(id)
-  return notifications;
-};
-
-const readNotification = async (id) => {
-  const notifications = await Notification.findByIdAndUpdate(id, {
-    viewStatus: true,
+  const filter = {};
+  const options = { limit: 10, sortBy: "createdAt:desc" };
+  const notificationsAll = await getNotifications(filter, options, userId);
+  
+  io.emit(messageEvent, {
+    message: "Notifications",
+    status: "OK",
+    statusCode: httpStatus.OK,
+    data: notificationsAll,
   });
-  if(!notifications){
-    throw new ApiError(httpStatus.NOT_FOUND, "Notification not found");
-  }
-  return notifications;
-}
+  return result;
+};
 
 module.exports = {
   addNotification,
@@ -168,5 +228,6 @@ module.exports = {
   getALLNotificationAdmin,
   deleteNotificationById,
   readNotification,
-  getALLNotificationAdminSocket
+  getALLNotificationAdminSocket,
+  addCustomNotification,
 };

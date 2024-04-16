@@ -4,12 +4,12 @@ const notificationController = require("../../controllers/notification.controlle
 
 const router = express.Router();
 
-router.route("/").get(notificationController.getALLNotification);
+router.route("/").get(auth("common"), notificationController.getALLNotification);
 
 router
   .route("/:id")
-  .patch(notificationController.readNotification)
+  .post(notificationController.readNotification)
   .delete(notificationController.deleteNotificationById);
-router.route("/admin").get(notificationController.getALLNotificationAdmin);
+router.route("/admin").get(auth("admin"), notificationController.getALLNotificationAdmin);
 
 module.exports = router;

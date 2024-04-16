@@ -4,7 +4,7 @@ const logger = require("../config/logger");
 const { Tasks, Service, SubmitTask, User } = require("../models");
 const { userService } = require(".");
 const { createPayment } = require("./payment.service");
-const { addNotification, getALLNotificationAdmin } = require("./notification.service");
+const { addNotification, getALLNotificationAdmin, addCustomNotification } = require("./notification.service");
 const pick = require("../utils/pick");
 
 const createTask = async (userId, bodyData) => {
@@ -285,34 +285,32 @@ const submitTaskUpdate = async (taskId, status) => {
 
   if (status === "accepted") {
     if (task.quantity > 1) {
-      const newNotification = {
+      const newNotificationEmployee = {
         receiverId: submitTask.userId,
-        role: "client",
+        role: "employee",
         message: `Your task ${task.name} has been accepted.`,
       };
 
-      const result = await addNotification(newNotification);
-      const messageEvent = `client-notification:${submitTask.userId}`;
-      const filter = {};
-      const options = {};
-      if (!options.sortBy) {
-        options.sortBy = "createdAt:desc";
-      }
-      const notifications = await getALLNotificationAdmin(
-        filter,
-        options
-      );
-      io.emit(messageEvent, {
-        message: "Notifications",
-        status: "OK",
-        statusCode: httpStatus.OK,
-        data: notifications,
-      });
+     await addCustomNotification("employee-notification",submitTask.userId,newNotificationEmployee);
 
       Object.assign(task, {
         quantity: task.quantity - 1,
       });
     } else {
+      const newNotificationEmployee = {
+        receiverId: submitTask.userId,
+        role: "employee",
+        message: `Your task ${submitTask.name} has been accepted.`,
+      };
+      const newNotificationClient = {
+        receiverId: task.userId,
+        role: "client",
+        message: `Your task ${task.name} has been Completed.`,
+      };
+
+      await addCustomNotification("employee-notification",submitTask.userId,newNotificationEmployee);
+      await addCustomNotification("client-notification",task.userId,newNotificationClient);
+
       Object.assign(task, {
         status: "completed",
         quantity: task.quantity - 1,
