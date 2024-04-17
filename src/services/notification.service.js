@@ -38,51 +38,6 @@ const getNotificationByParticipants = async (participants) => {
   return notification;
 };
 
-// const getALLNotification = async (filter, options, userId) => {
-//   try {
-//     const { page = 1, limit = 10 } = options;
-
-//     // Count total number of notifications
-//     const totalCount = await Notification.countDocuments({
-//       $or: [{ userId }, { receiverId: userId }],
-//       ...filter,
-//     });
-
-//     // Count total number of notifications with viewStatus: false
-//     const unReadCount = await Notification.countDocuments({
-//       $or: [{ userId }, { receiverId: userId }],
-//       viewStatus: false,
-//       ...filter,
-//     });
-
-//     // Calculate total pages
-//     const totalPages = Math.ceil(totalCount / limit);
-
-//     // Determine the number of documents to skip
-//     const skip = (page - 1) * limit;
-
-//     // Perform query to retrieve paginated notifications
-//     const results = await Notification.find({
-//       $or: [{ userId }, { receiverId: userId }],
-//       ...filter,
-//     })
-//       .skip(skip)
-//       .limit(limit)
-//       .sort({ createdAt: -1 });
-
-//     return {
-//       results,
-//       page,
-//       limit,
-//       totalPages,
-//       totalResults: totalCount,
-//       unReadCount,
-//     };
-//   } catch (err) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, err.message);
-//   }
-// };
-
 const getALLNotificationAdmin = async (filter, options) => {
   try {
     const notifications = await Notification.paginate(filter, options);
@@ -202,6 +157,51 @@ const getALLNotification = async (filter, options, userId) => {
   }
 };
 
+const getALLAdminNotification = async (filter, options) => {
+  try {
+    const { page = 1, limit = 10 } = options;
+    filter = { ...filter, role: "admin" };
+
+    // Count total number of notifications
+    const totalCount = await Notification.countDocuments({
+      ...filter,
+    });
+
+    // Count total number of notifications with viewStatus: false
+    const unReadCount = await Notification.countDocuments({
+      viewStatus: false,
+      ...filter,
+    });
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // Determine the number of documents to skip
+    const skip = (page - 1) * limit;
+
+    // Perform query to retrieve paginated notifications
+    const results = await Notification.find({
+      ...filter,
+    })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    return {
+      results,
+      page,
+      limit,
+      totalPages,
+      totalResults: totalCount,
+      unReadCount,
+    };
+  } catch (err) {
+    throw new ApiError(httpStatus.BAD_REQUEST, err.message);
+  }
+};
+
+
+
 const addCustomNotification = async (eventName, userId, notifications) => {
   const messageEvent = `${eventName}::${userId}`;
   const result = await addNotification(notifications);
@@ -219,6 +219,7 @@ const addCustomNotification = async (eventName, userId, notifications) => {
   return result;
 };
 
+
 module.exports = {
   addNotification,
   getNotifications,
@@ -230,4 +231,5 @@ module.exports = {
   readNotification,
   getALLNotificationAdminSocket,
   addCustomNotification,
+  getALLAdminNotification
 };
