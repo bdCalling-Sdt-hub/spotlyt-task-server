@@ -8,7 +8,6 @@ const { notificationService } = require("../services");
 const getALLNotification = catchAsync(async (req, res) => {
   const filter = pick(req.query, ["type"]);
   const options = pick(req.query, ["sortBy", "limit", "page"]);
-  console.log(req.user);
   const notifications = await notificationService.getALLNotification(filter, options,req.user.id);
   res.status(httpStatus.OK).json(response({ message:"Notifications", status: "OK", statusCode:httpStatus.OK , data: notifications}));
 });

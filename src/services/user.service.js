@@ -3,6 +3,7 @@ const { User, Interest } = require("../models");
 const ApiError = require("../utils/ApiError");
 const { sendEmailVerification } = require("./email.service");
 const unlinkImages = require("../common/unlinkImage");
+const { addCustomNotification } = require("./notification.service");
 
 const createUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
@@ -155,6 +156,12 @@ const verifyNid = async (id, nidNumber) => {
   }
   user.nidNumber = nidNumber;
   user.nidStatus= 'pending'
+  const newNotificationAdmin = {
+    role: "admin",
+    message: `${user.fullName} requested for NID verification.`,
+  };
+
+  await addCustomNotification("admin-notification",'admin',newNotificationAdmin);
   await user.save();
   return user;
 };
@@ -175,6 +182,13 @@ const nidVerifyApproval = async (id) => {
   }
   if (user.nidStatus === "pending") {
     user.nidStatus = "approved";
+    const newNotificationEmployee = {
+      receiverId: user._id,
+      role: "employee",
+      message: `Your NID has been Approved.`,
+    };
+  
+    await addCustomNotification("employee-notification",user._id,newNotificationEmployee);
   }
   await user.save();
   return user;
@@ -191,6 +205,14 @@ const nidVerifyReject = async (id) => {
       "NID verification already cancelled for this user"
     );
   }
+
+  const newNotificationEmployee = {
+    receiverId: user._id,
+    role: "employee",
+    message: `Your NID verification has been Rejected.`,
+  };
+
+  await addCustomNotification("employee-notification",user._id,newNotificationEmployee);
   user.nidStatus = "cancelled"; // Assuming "cancelled" is the status when NID verification is cancelled
   await user.save();
   return user;

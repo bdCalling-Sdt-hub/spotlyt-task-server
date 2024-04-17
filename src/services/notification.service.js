@@ -208,7 +208,7 @@ const addCustomNotification = async (eventName, userId, notifications) => {
 
   const filter = {};
   const options = { limit: 10, sortBy: "createdAt:desc" };
-  const notificationsAll = await getNotifications(filter, options, userId);
+  const notificationsAll = await getALLNotification(filter, options, userId);
   
   io.emit(messageEvent, {
     message: "Notifications",
