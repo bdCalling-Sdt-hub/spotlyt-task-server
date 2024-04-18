@@ -30,9 +30,15 @@ const readNotification = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).json(response({ message:"notification Read successfully", status: "OK", statusCode:httpStatus.OK }));
 })
 
+const readNotificationAdmin = catchAsync(async (req, res) => {
+  const result = await notificationService.readNotificationAdmin();
+  res.status(httpStatus.OK).json(response({ message:"notification Read successfully", status: "OK", statusCode:httpStatus.OK }));
+})
+
 module.exports = {
   getALLNotification,
   getALLNotificationAdmin,
   deleteNotificationById,
-  readNotification
+  readNotification,
+  readNotificationAdmin
 };

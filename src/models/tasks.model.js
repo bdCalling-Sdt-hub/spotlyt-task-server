@@ -30,6 +30,10 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    interest: {
+      type: String,
+      required: false,
+    },
     status: {
       type: String,
       enum: ["completed", "failed", "pending"],

@@ -171,6 +171,17 @@ const userRatioCount = catchAsync(async (req, res) => {
     })
   );
 });
+const userInterestUpdate = catchAsync(async (req, res) => {
+  const user = await userService.userInterestUpdate(req.user.id,req.body);
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User Interest Update",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: user,
+    })
+  );
+});
 
 module.exports = {
   createUser,
@@ -184,4 +195,5 @@ module.exports = {
   nidVerifySubmitList,
   interestList,
   userRatioCount,
+  userInterestUpdate
 };

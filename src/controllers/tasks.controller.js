@@ -31,7 +31,7 @@ const getTask = catchAsync(async (req, res) => {
 });
 
 const getTasks = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ["userId"]);
+  const filter = pick(req.query, ["userId", "status"]);
   const options = pick(req.query, ["sortBy", "limit", "page"]);
   const result = await tasksService.queryTasks(
     filter,

@@ -112,6 +112,8 @@ const readNotification = async (id) => {
   return notifications;
 };
 
+
+
 const getALLNotification = async (filter, options, userId) => {
   try {
     const { page = 1, limit = 10 } = options;
@@ -206,17 +208,31 @@ const addCustomNotification = async (eventName, userId, notifications) => {
   const messageEvent = `${eventName}::${userId}`;
   const result = await addNotification(notifications);
 
-  const filter = {};
-  const options = { limit: 10, sortBy: "createdAt:desc" };
-  const notificationsAll = await getALLNotification(filter, options, userId);
-  
-  io.emit(messageEvent, {
-    message: "Notifications",
-    status: "OK",
-    statusCode: httpStatus.OK,
-    data: notificationsAll,
-  });
+  if(eventName !== "admin-notification") {
+    const filter = {};
+    const options = { limit: 10, sortBy: "createdAt:desc" };
+    const notificationsAll = await getALLNotification(filter, options, userId);
+    
+    io.emit(messageEvent, {
+      message: "Notifications",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: notificationsAll,
+    });
+  }
   return result;
+};
+
+
+
+const readNotificationAdmin = async (id) => {
+  const notifications = await Notification.findByIdAndUpdate(id, {
+    viewStatus: true,
+  });
+  if (!notifications) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Notification not found");
+  }
+  return notifications;
 };
 
 
@@ -231,5 +247,6 @@ module.exports = {
   readNotification,
   getALLNotificationAdminSocket,
   addCustomNotification,
-  getALLAdminNotification
+  getALLAdminNotification,
+  readNotificationAdmin
 };

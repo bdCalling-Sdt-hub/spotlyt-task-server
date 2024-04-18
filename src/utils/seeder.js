@@ -41,11 +41,11 @@ const serviceData = [
     name: "Organic Social Media Advertising",
     type: "socialMedia",
     description: [
-      "REQUEST TO GET ORGANIC LIKES",
-      "REQUEST FOLLOWERS",
-      "REQUEST COMMENTS",
-      "REQUEST VIEWS",
-      "REQUEST SHARING TO STORY",
+      "GET ORGANIC LIKES",
+      "GET ORGANIC FOLLOWERS",
+      "GET ORGANIC COMMENTS",
+      "GET ORGANIC VIEWS",
+      "GET ORGANIC SHARING TO STORY",
     ],
     Categories: [
       {
@@ -54,7 +54,7 @@ const serviceData = [
         service: [
           {
             name: "Request Likes",
-            price: 0.6,
+            price: 0.60,
             sobTitle: "Per Like",
             min: 10,
             max: 10000,
@@ -178,10 +178,10 @@ const serviceData = [
     name: "Organic Video Promotions",
     type: "video",
     description: [
-      "REQUEST TO GET ORGANIC VIEWS",
-      "REQUEST LIKES",
-      "REQUEST COMMENTS",
-      "REQUEST SUBSCRIBERS",
+      "GET ORGANIC VIEWS",
+      "GET ORGANIC LIKES",
+      "GET ORGANIC COMMENTS",
+      "GET ORGANIC SUBSCRIBERS",
     ],
     Categories: [
       {

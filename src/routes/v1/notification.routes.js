@@ -10,6 +10,7 @@ router
   .route("/:id")
   .post(notificationController.readNotification)
   .delete(notificationController.deleteNotificationById);
-router.route("/admin").get(auth("admin"), notificationController.getALLNotificationAdmin);
+router.route("/admin").get(auth("admin"), notificationController.getALLNotificationAdmin)
+      // .post(auth("admin"), notificationController.readNotificationAdmin)
 
 module.exports = router;

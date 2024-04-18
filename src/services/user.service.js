@@ -228,6 +228,22 @@ const interestList = async () => {
   return interest;
 };
 
+const userInterestUpdate = async (id,updateBody) => {
+  const user = await getUserById(id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  console.log(updateBody.interest);
+  if(updateBody.interest.length === 0){
+    throw new ApiError(httpStatus.BAD_REQUEST, "Please select at least one interest.");
+  }
+  updateBody.isInterest = true;
+  Object.assign(user, updateBody);
+  await user.save();
+  return user;
+};
+
+
 module.exports = {
   createUser,
   queryUsers,
@@ -240,5 +256,6 @@ module.exports = {
   nidVerifyApproval,
   nidVerifyReject,
   nidVerifySubmitList,
-  interestList
+  interestList,
+  userInterestUpdate
 };

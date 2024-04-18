@@ -12,7 +12,8 @@ const uploadUsers = userFileUploadMiddleware(UPLOADS_FOLDER_USERS);
 const router = express.Router();
 
 
-router.route("/interest").get(userController.interestList);
+router.route("/interest").get(userController.interestList)
+router.route("/interest").post(auth("common"), userController.userInterestUpdate);
 router.route("/ratio").get(userController.userRatioCount);
 router.route("/verifyNid").post(auth("common"), userController.verifyNid);
 router.route("/nidVerifyApproval").post(auth("common"), userController.nidVerifyApproval);

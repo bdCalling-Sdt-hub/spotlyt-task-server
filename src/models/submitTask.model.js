@@ -22,6 +22,10 @@ const submitTaskSchema = new mongoose.Schema(
       enum: ["accepted", "rejected", "pending",'submitted'],
       default: "pending",
     },
+    interest: {
+      type: String,
+      required: false,
+    },
     price: {
       type: Number,
       required: false,
