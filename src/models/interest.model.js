@@ -3,8 +3,10 @@ const { toJSON, paginate } = require("./plugins");
 
 const interestSchema = new mongoose.Schema(
   {
-    id: Number,
-    title: String
+    title: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

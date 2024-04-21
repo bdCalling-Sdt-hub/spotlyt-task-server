@@ -5,7 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 const response = require("../config/response");
 const { userService } = require("../services");
 const unlinkImages = require("../common/unlinkImage");
-const { User } = require("../models");
+const { User, Interest } = require("../models");
 
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -172,7 +172,7 @@ const userRatioCount = catchAsync(async (req, res) => {
   );
 });
 const userInterestUpdate = catchAsync(async (req, res) => {
-  const user = await userService.userInterestUpdate(req.user.id,req.body);
+  const user = await userService.userInterestUpdate(req.user.id, req.body);
   res.status(httpStatus.OK).json(
     response({
       message: "User Interest Update",
@@ -184,13 +184,26 @@ const userInterestUpdate = catchAsync(async (req, res) => {
 });
 
 const interestAdd = catchAsync(async (req, res) => {
-  const user = await userService.interestAdd(req.user.id,req.body);
+  const interest = await Interest.create(req.body);
+
   res.status(httpStatus.OK).json(
     response({
-      message: "User Interest Add",
+      message: "Interest add successfully",
       status: "OK",
       statusCode: httpStatus.OK,
-      data: user,
+      data: {},
+    })
+  );
+});
+
+const interestDelete = catchAsync(async (req, res) => {
+  const interest = await Interest.findByIdAndDelete(req.query.interestId);
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Interest Deleted",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: {},
     })
   );
 });
@@ -208,5 +221,6 @@ module.exports = {
   interestList,
   userRatioCount,
   userInterestUpdate,
-  interestAdd
+  interestAdd,
+  interestDelete
 };

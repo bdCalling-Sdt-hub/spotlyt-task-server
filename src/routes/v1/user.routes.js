@@ -14,6 +14,7 @@ const router = express.Router();
 
 router.route("/interest").get(userController.interestList)
 router.route("/interest").patch(userController.interestAdd)
+router.route("/interest").delete(userController.interestDelete)
 router.route("/interest").post(auth("common"), userController.userInterestUpdate);
 router.route("/ratio").get(userController.userRatioCount);
 router.route("/verifyNid").post(auth("common"), userController.verifyNid);
