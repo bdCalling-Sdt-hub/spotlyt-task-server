@@ -3,9 +3,11 @@ const pick = require("../utils/pick");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const response = require("../config/response");
-const { User, Referral } = require("../models");
+const { User, Referral, ReferralAmount } = require("../models");
 
 const claimed = catchAsync(async (req, res) => {
+  let referralAmount = await ReferralAmount.findOne();
+  // console.log("referralAmount", referralAmount.amount);
   const user = await User.findOne({ _id: req.user._id });
   const referralCode = req.body.referralCode;
 
@@ -39,7 +41,7 @@ const claimed = catchAsync(async (req, res) => {
   await user.save();
 
   // Increment claimedUser's rand
-  claimedUser.rand += 1;
+  claimedUser.rand += referralAmount.amount;
   await claimedUser.save();
 
   return res.status(httpStatus.OK).json(
@@ -66,8 +68,46 @@ const  myReferrals = catchAsync(async (req, res) => {
   );
 });
 
+const addReferralAmount = catchAsync(async (req, res) => {
+  let existingReferralAmount = await ReferralAmount.findOne();
+
+  if (existingReferralAmount) {
+    // Update existing referral amount
+    existingReferralAmount.amount = req.body.amount;
+    await existingReferralAmount.save();
+  } else {
+    // Create new referral amount if it doesn't exist
+    existingReferralAmount = await ReferralAmount.create({
+      amount: req.body.amount
+    });
+  }
+
+  return res.status(httpStatus.OK).json(
+    response({
+      message: existingReferralAmount ? "Referral Amount Updated" : "Referral Amount Added",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: {},
+    })
+  );
+});
+
+const getReferralAmount = catchAsync(async (req, res) => {
+  const referralAmount = await ReferralAmount.findOne();
+  return res.status(httpStatus.OK).json(
+    response({
+      message: "Referral Amount",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: referralAmount,
+    })
+  );
+});
+
 
 module.exports = {
   claimed,
-  myReferrals
+  myReferrals,
+  addReferralAmount,
+  getReferralAmount
 };

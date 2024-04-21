@@ -183,6 +183,18 @@ const userInterestUpdate = catchAsync(async (req, res) => {
   );
 });
 
+const interestAdd = catchAsync(async (req, res) => {
+  const user = await userService.interestAdd(req.user.id,req.body);
+  res.status(httpStatus.OK).json(
+    response({
+      message: "User Interest Add",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: user,
+    })
+  );
+});
+
 module.exports = {
   createUser,
   getUsers,
@@ -195,5 +207,6 @@ module.exports = {
   nidVerifySubmitList,
   interestList,
   userRatioCount,
-  userInterestUpdate
+  userInterestUpdate,
+  interestAdd
 };

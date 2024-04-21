@@ -4,7 +4,6 @@ const { toJSON, paginate } = require("./plugins");
 const interestSchema = new mongoose.Schema(
   {
     id: Number,
-    icon: String,
     title: String
   },
   {
@@ -13,7 +12,6 @@ const interestSchema = new mongoose.Schema(
 );
 
 // add plugin that converts mongoose to json
-// notificationSchema.plugin(toJSON);
 interestSchema.plugin(paginate);
 
 module.exports = mongoose.model("Interest", interestSchema);

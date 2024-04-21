@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.route("/my").get(auth("common"), referralController.myReferrals);
 router.route("/").post(auth("common"), referralController.claimed);
+router.route("/amount").post( referralController.addReferralAmount);
+router.route("/amount").get( referralController.getReferralAmount);
 
 // router
 //   .route("/:userId")
