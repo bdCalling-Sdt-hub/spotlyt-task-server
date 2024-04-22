@@ -11,6 +11,7 @@ const aboutRoute = require("./about.routes");
 const withdrawalRoute = require("./withdrawal.routes");
 const paymentRoute = require("./payment.routes");
 const notificationRoute = require("./notification.routes");
+const serviceRoute = require("./service.routes");
 
 const router = express.Router();
 
@@ -54,6 +55,14 @@ const defaultRoutes = [
   {
     path: "/payment",
     route: paymentRoute,
+  },
+  {
+    path: "/payment",
+    route: paymentRoute,
+  },
+  {
+    path: "/service",
+    route: serviceRoute,
   },
 ];
 

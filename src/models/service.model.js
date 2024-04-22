@@ -1,30 +1,22 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-// Define the service schema
-const serviceSchema = new Schema({
-  name: String,
-  price: Number,
-  sobTitle: String,
-  min: Number,
-  max: Number,
-});
-
-// Define the category schema
-const categorySchema = new Schema({
-  id: String,
-  name: String,
-  service: [serviceSchema]
-});
-
 // Define the main schema
-const mainSchema = new Schema({
-  id: String,
-  name: String,
-  type: String,
-  description: [String],
-  Categories: [categorySchema]
+const serviceSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ["socialMedia", "video", "corporate"],
+    required: true,
+  },
+  description: {
+    type: Array,
+    required: true,
+  },
 });
 
 // Create and export the mongoose model
-module.exports = mongoose.model("Service", mainSchema);
+module.exports = mongoose.model("Service", serviceSchema);
