@@ -67,6 +67,21 @@ const addService = catchAsync(async (req, res) => {
   );
 });
 
+const getOneService = catchAsync(async (req, res) => {
+  const service = await Service.findById(req.query.id);
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Service",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: service,
+    })
+  );
+});
+
 const addServiceCategory = catchAsync(async (req, res) => {
   const service = await Service.findById(req.body.serviceId);
   if (!service) {
@@ -314,6 +329,7 @@ const getSingleServiceById = catchAsync(async (req, res) => {
 
 module.exports = {
   getServiceList,
+  getOneService,
   CategoryUpdate,
   deleteService,
   addService,
