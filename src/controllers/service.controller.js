@@ -152,9 +152,6 @@ const getServiceCategoryById = catchAsync(async (req, res) => {
 
 const deleteServiceCategory = catchAsync(async (req, res) => {
   const serviceCategory = await ServiceCategory.findByIdAndDelete(req.query.id);
-  if (!serviceCategory) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Service Category not found");
-  }
   res.status(httpStatus.OK).json(
     response({
       message: "Service Category Deleted",
