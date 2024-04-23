@@ -11,8 +11,12 @@ router.route("/").put( serviceController.CategoryUpdate);
 router.route("/").post( serviceController.addService);
 router.route("/category").post( serviceController.addServiceCategory)
 router.route("/category").get(serviceController.getServiceCategory)
+router.route("/category").put(serviceController.updateServiceCategory)
 router.route("/category/single").post( serviceController.addSingleService)
 router.route("/category/single").get( serviceController.getSingleService)
+router.route("/category/single").put( serviceController.updateSingleServiceById)
+router.route("/category/single").delete( serviceController.deleteSingleServiceById)
+router.route("/category/single/one").get( serviceController.getSingleServiceById)
 
 // router.route("/").post( referralController.createService);
 // router

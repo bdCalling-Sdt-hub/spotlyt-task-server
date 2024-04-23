@@ -22,36 +22,22 @@ const getServiceList = catchAsync(async (req, res) => {
 });
 
 const CategoryUpdate = catchAsync(async (req, res) => {
-  try {
-    const { serviceId, categoryId, serviceIndex, property } = req.query;
-    const updatedValue = req.body.value;
-
-    let service = await Service.findById(serviceId);
-
-    const categoryIndex = service.Categories.findIndex(
-      (cat) => cat.id === categoryId
-    );
-    if (categoryIndex !== -1) {
-      const category = service.Categories[categoryIndex];
-      if (category.service.length > serviceIndex) {
-        const serviceToUpdate = category.service[serviceIndex];
-        if (serviceToUpdate.hasOwnProperty(property)) {
-          serviceToUpdate[property] = updatedValue;
-          await service.save();
-          res.json(service);
-        } else {
-          res.status(404).json({ message: "Property not found" });
-        }
-      } else {
-        res.status(404).json({ message: "Service not found" });
-      }
-    } else {
-      res.status(404).json({ message: "Category not found" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+  const service = await Service.findById(req.query.id);
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
   }
+  const serviceCategory = await Service.findByIdAndUpdate(
+    req.query.id,
+    req.body
+  );
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Service Category Updated",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: serviceCategory,
+    })
+  );
 });
 
 const addService = catchAsync(async (req, res) => {
@@ -97,6 +83,27 @@ const getServiceCategory = catchAsync(async (req, res) => {
   );
 });
 
+const updateServiceCategory = catchAsync(async (req, res) => {
+  const serviceCategory = await ServiceCategory.findByIdAndUpdate(
+    req.query.id,
+    req.body,
+    {
+      new: true,
+    }
+  );
+  if (!serviceCategory) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service Category not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Service Category Updated",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: serviceCategory,
+    })
+  );
+});
+
 const addSingleService = catchAsync(async (req, res) => {
   const serviceCategory = await ServiceCategory.findById(
     req.body.serviceCategoryId
@@ -116,7 +123,7 @@ const addSingleService = catchAsync(async (req, res) => {
 });
 
 const getSingleService = catchAsync(async (req, res) => {
-  const service = await SingleServiceCategory.find({});
+  const service = await SingleServiceCategory.find({serviceCategoryId:req.query.serviceCategoryId});
   if (!service) {
     throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
   }
@@ -199,13 +206,80 @@ const getServiceWithCategoriesAndServices = catchAsync(async (req, res) => {
       }
 });
 
+const serviceCategoryIdBySingleService = catchAsync(async (req, res) => {
+  const service = await SingleServiceCategory.find({serviceCategoryId:req.query.serviceCategoryId})
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service Category not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Service Category",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: service,
+    })
+  );
+});
+
+const updateSingleServiceById= catchAsync(async (req, res) => {
+  const service = await SingleServiceCategory.findByIdAndUpdate(req.query.id, req.body, {
+    new: true,
+  });
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Single Service Updated",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: service,
+    })
+  );
+});
+
+const deleteSingleServiceById = catchAsync(async (req, res) => {
+  const service = await SingleServiceCategory.findByIdAndDelete(req.query.id);
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Single Service Deleted",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: service,
+    })
+  );
+});
+
+const getSingleServiceById = catchAsync(async (req, res) => {
+  const service = await SingleServiceCategory.findById(req.query.id);
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Single Service",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: service,
+    })
+  );
+});
+
 module.exports = {
   getServiceList,
   CategoryUpdate,
   addService,
   addServiceCategory,
+  updateServiceCategory,
   addSingleService,
   getServiceCategory,
   getSingleService,
-  getServiceWithCategoriesAndServices
+  getServiceWithCategoriesAndServices,
+  serviceCategoryIdBySingleService,
+  updateSingleServiceById,
+  getSingleServiceById,
+  deleteSingleServiceById
 };
