@@ -40,6 +40,21 @@ const CategoryUpdate = catchAsync(async (req, res) => {
   );
 });
 
+const deleteService = catchAsync(async (req, res) => {
+  const service = await Service.findByIdAndDelete(req.query.id);
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Service Deleted",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: service,
+    })
+  );
+});
+
 const addService = catchAsync(async (req, res) => {
   const service = await Service.create(req.body);
   res.status(httpStatus.OK).json(
@@ -83,6 +98,7 @@ const getServiceCategory = catchAsync(async (req, res) => {
   );
 });
 
+
 const updateServiceCategory = catchAsync(async (req, res) => {
   const serviceCategory = await ServiceCategory.findByIdAndUpdate(
     req.query.id,
@@ -103,6 +119,36 @@ const updateServiceCategory = catchAsync(async (req, res) => {
     })
   );
 });
+
+const getServiceCategoryById = catchAsync(async (req, res) => {
+  const serviceCategory = await ServiceCategory.findById(req.query.id);
+  if (!serviceCategory) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service Category not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Service Category",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: serviceCategory,
+    })
+  );
+})
+
+const deleteServiceCategory = catchAsync(async (req, res) => {
+  const serviceCategory = await ServiceCategory.findByIdAndDelete(req.query.id);
+  if (!serviceCategory) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Service Category not found");
+  }
+  res.status(httpStatus.OK).json(
+    response({
+      message: "Service Category Deleted",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: serviceCategory,
+    })
+  );
+})
 
 const addSingleService = catchAsync(async (req, res) => {
   const serviceCategory = await ServiceCategory.findById(
@@ -240,9 +286,7 @@ const updateSingleServiceById= catchAsync(async (req, res) => {
 
 const deleteSingleServiceById = catchAsync(async (req, res) => {
   const service = await SingleServiceCategory.findByIdAndDelete(req.query.id);
-  if (!service) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
-  }
+
   res.status(httpStatus.OK).json(
     response({
       message: "Single Service Deleted",
@@ -271,9 +315,12 @@ const getSingleServiceById = catchAsync(async (req, res) => {
 module.exports = {
   getServiceList,
   CategoryUpdate,
+  deleteService,
   addService,
   addServiceCategory,
   updateServiceCategory,
+  getServiceCategoryById,
+  deleteServiceCategory,
   addSingleService,
   getServiceCategory,
   getSingleService,
