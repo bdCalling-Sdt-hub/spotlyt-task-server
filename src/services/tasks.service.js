@@ -9,6 +9,7 @@ const pick = require("../utils/pick");
 
 const createTask = async (userId, bodyData) => {
   const user = await userService.getUserById(userId); // Use userService
+  console.log("body", bodyData);
   const service = await Service.findOne({ _id: bodyData.serviceId });
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");

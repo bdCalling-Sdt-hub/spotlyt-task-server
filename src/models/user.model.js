@@ -70,11 +70,11 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    interest: {
-      type: Array,
+    interest: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Interest",
       required: false,
-      default: [],
-    },
+    }],
     address: {
       type: String,
       required: false,

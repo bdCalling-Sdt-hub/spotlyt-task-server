@@ -31,23 +31,22 @@ const taskSchema = new mongoose.Schema(
       required: false,
     },
     interest: {
-      type: String,
-      required: false,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Interest",
+      required: true,
     },
     status: {
       type: String,
       enum: ["completed", "failed", "pending"],
       default: "pending",
     },
-    timeline: {
-      start: {
-        type: Date,
-        required: false,
-      },
-      end: {
-        type: Date,
-        required: false,
-      },
+    timelinesStart: {
+      type: Date,
+      required: false,
+    },
+    timelinesEnd: {
+      type: Date,
+      required: false,
     },
     quantity: {
       type: Number,
