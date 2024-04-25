@@ -188,7 +188,7 @@ const taskRegister = async (userId, body) => {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
   if(user.nidStatus !== "approved"){
-    throw new ApiError(httpStatus.NOT_FOUND, "Please submitted Nid for approval");
+    throw new ApiError(httpStatus.NOT_FOUND, "Provide NID for account verification!");
   }
   const data = {
     ...body,
