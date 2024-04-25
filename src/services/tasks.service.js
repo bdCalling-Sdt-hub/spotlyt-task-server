@@ -9,7 +9,7 @@ const pick = require("../utils/pick");
 
 const createTask = async (userId, bodyData) => {
   const user = await userService.getUserById(userId); // Use userService
-  console.log("body", bodyData);
+  // console.log("body", bodyData);
   const service = await Service.findOne({ _id: bodyData.serviceId });
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -187,11 +187,8 @@ const taskRegister = async (userId, body) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-  if (!user.nidStatus === "approved") {
-    throw new ApiError(
-      httpStatus.NOT_FOUND,
-      "Please submitted Nid for approval"
-    );
+  if(user.nidStatus !== "approved"){
+    throw new ApiError(httpStatus.NOT_FOUND, "Please submitted Nid for approval");
   }
   const data = {
     ...body,
@@ -280,6 +277,7 @@ const submitTaskUpdate = async (taskId, status) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
+
   if (task.quantity === 0) {
     throw new ApiError(httpStatus.NOT_FOUND, "Task is already completed");
   }

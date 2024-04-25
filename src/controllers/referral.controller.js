@@ -14,7 +14,6 @@ const claimed = catchAsync(async (req, res) => {
   // Find the user with the referral code
   const claimedUser = await User.findOne({ referralCode });
 
-  console.log("claimedUser", claimedUser, referralCode);
 
   // Check if referral has already been claimed
   const referralClaimed = await Referral.findOne({ referralCode });
@@ -39,6 +38,8 @@ const claimed = catchAsync(async (req, res) => {
   user.claimedReferralCode = referralCode;
   user.referralClaimed = true;
   await user.save();
+
+  console.log("claimedUser amound", referralAmount.amount);
 
   // Increment claimedUser's rand
   claimedUser.rand += referralAmount.amount;
