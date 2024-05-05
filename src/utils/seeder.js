@@ -307,24 +307,24 @@ const seedUsers = async () => {
   }
 };
 
-const seedSubscriptions = async () => {
-  try {
-    await Service.deleteMany();
-    await Service.insertMany(serviceData);
-    console.log("Services seeded successfully!");
-  } catch (err) {
-    console.error("Error seeding Services:", err);
-  }
-};
-const seedInterest = async () => {
-  try {
-    await Interest.deleteMany();
-    await Interest.insertMany(interests);
-    console.log("Interests seeded successfully!");
-  } catch (err) {
-    console.error("Error seeding Interests:", err);
-  }
-};
+// const seedSubscriptions = async () => {
+//   try {
+//     await Service.deleteMany();
+//     await Service.insertMany(serviceData);
+//     console.log("Services seeded successfully!");
+//   } catch (err) {
+//     console.error("Error seeding Services:", err);
+//   }
+// };
+// const seedInterest = async () => {
+//   try {
+//     await Interest.deleteMany();
+//     await Interest.insertMany(interests);
+//     console.log("Interests seeded successfully!");
+//   } catch (err) {
+//     console.error("Error seeding Interests:", err);
+//   }
+// };
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URL);
@@ -334,8 +334,8 @@ const seedDatabase = async () => {
   try {
     await dropDatabase();
     await seedUsers();
-    await seedSubscriptions();
-    await seedInterest();
+    // await seedSubscriptions();
+    // await seedInterest();
     console.log("--------------> Database seeding completed <--------------");
   } catch (err) {
     console.error("Error seeding database:", err);
