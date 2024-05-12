@@ -214,16 +214,48 @@ const taskSubmit = async (userId, submitTaskId, image) => {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
   const submitTask = await SubmitTask.findById({ _id: submitTaskId });
+  const task = await Tasks.findById({ _id: submitTask.taskId });
+
   if (!submitTask) {
     throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
   }
+  if (!task) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Task not found");
+  }
+  if (task.quantity === 0) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Task is already completed");
+  }
+
   if (submitTask.status !== "pending") {
     throw new ApiError(httpStatus.BAD_REQUEST, "Already submitted");
   }
+  if (task.quantity > 1) {
+    Object.assign(task, {
+      quantity: task.quantity - 1,
+    });
+  } else {
+    const newNotificationClient = {
+      receiverId: task.userId,
+      role: "client",
+      message: `Your task ${task.name} has been Completed.`,
+    };
+    await addCustomNotification(
+      "client-notification",
+      task.userId,
+      newNotificationClient
+    );
+
+    Object.assign(task, {
+      status: "completed",
+      quantity: task.quantity - 1,
+    });
+  }
+
   Object.assign(submitTask, {
     image,
     status: "submitted",
   });
+  await task.save();
   await submitTask.save();
   return submitTask;
 };
@@ -281,62 +313,23 @@ const submitTaskUpdate = async (taskId, status) => {
   if (!submitTask) {
     throw new ApiError(httpStatus.NOT_FOUND, "Submit Task not found");
   }
-  if (!task) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Task not found");
-  }
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  if (task.quantity === 0) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Task is already completed");
-  }
-
   if (status === "accepted") {
-    if (task.quantity > 1) {
-      const newNotificationEmployee = {
-        receiverId: submitTask.userId,
-        role: "employee",
-        message: `Your task ${task.name} has been accepted.`,
-      };
+    const newNotificationEmployee = {
+      receiverId: submitTask.userId,
+      role: "employee",
+      message: `Your task ${task.name} has been accepted.`,
+    };
 
-      await addCustomNotification(
-        "employee-notification",
-        submitTask.userId,
-        newNotificationEmployee
-      );
+    await addCustomNotification(
+      "employee-notification",
+      submitTask.userId,
+      newNotificationEmployee
+    );
 
-      Object.assign(task, {
-        quantity: task.quantity - 1,
-      });
-    } else {
-      const newNotificationEmployee = {
-        receiverId: submitTask.userId,
-        role: "employee",
-        message: `Your task ${submitTask.name} has been accepted.`,
-      };
-      const newNotificationClient = {
-        receiverId: task.userId,
-        role: "client",
-        message: `Your task ${task.name} has been Completed.`,
-      };
-
-      await addCustomNotification(
-        "employee-notification",
-        submitTask.userId,
-        newNotificationEmployee
-      );
-      await addCustomNotification(
-        "client-notification",
-        task.userId,
-        newNotificationClient
-      );
-
-      Object.assign(task, {
-        status: "completed",
-        quantity: task.quantity - 1,
-      });
-    }
     Object.assign(user, {
       rand: user.rand + submitTask.price,
     });
