@@ -226,9 +226,10 @@ const taskSubmit = async (userId, submitTaskId, image) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Task is already completed");
   }
 
-  if (submitTask.status !== "pending") {
+  if (submitTask.status === "submitted" || submitTask.status==="accepted") {
     throw new ApiError(httpStatus.BAD_REQUEST, "Already submitted");
   }
+  
   if (task.quantity > 1) {
     Object.assign(task, {
       quantity: task.quantity - 1,
@@ -336,6 +337,26 @@ const submitTaskUpdate = async (taskId, status) => {
     await task.save();
     await user.save();
   }
+
+  if(status==="rejected"){
+    const newNotificationEmployee = {
+      receiverId: submitTask.userId,
+      role: "employee",
+      message: `Your task ${task.name} has been rejected.`,
+    };
+
+    await addCustomNotification(
+      "employee-notification",
+      submitTask.userId,
+      newNotificationEmployee
+    );
+
+    Object.assign(task,{
+      quantity: task.quantity + 1 
+    })
+    await task.save();
+  }
+
 
   submitTask.status = status;
   await submitTask.save();

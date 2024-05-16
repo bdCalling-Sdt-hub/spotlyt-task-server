@@ -16,7 +16,7 @@ const claimed = catchAsync(async (req, res) => {
 
 
   // Check if referral has already been claimed
-  const referralClaimed = await Referral.findOne({ referralCode });
+  const referralClaimed = await Referral.findOne({ referralCode, userId: req.user._id });
 
   if (referralClaimed) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Referral Already Claimed");
