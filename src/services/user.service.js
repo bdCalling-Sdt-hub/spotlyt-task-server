@@ -199,7 +199,7 @@ const nidVerifyReject = async (id) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-  if (user.nidStatus !== "cancelled") {
+  if (user.nidStatus === "cancelled") {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
       "NID verification already cancelled for this user"
