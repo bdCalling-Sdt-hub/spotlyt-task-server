@@ -58,7 +58,7 @@ const userSchema = mongoose.Schema(
       required: false,
     },
     nidNumber: {
-      type: Number,
+      type: String,
       required: false,
     },
     nidStatus: {
