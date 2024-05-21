@@ -55,9 +55,15 @@ const queryTasks = async (filter, customOptions, type, userId) => {
 
   const options = { ...defaultOptions, ...customOptions };
 
+  if (userId) {
+    // Add the userId to the filter
+    filter = { ...filter, userId: userId };
+  }
+
   const result = await Tasks.paginate(filter, options);
   return result;
 };
+
 
 const getTaskById = async (id) => {
   const task = await Tasks.findById(id).populate("userId serviceId");
