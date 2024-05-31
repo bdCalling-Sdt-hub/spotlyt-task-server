@@ -17,7 +17,12 @@ const claimed = catchAsync(async (req, res) => {
 
   // Check if referral has already been claimed
   const referralClaimed = await Referral.findOne({ referralCode, userId: req.user._id });
+  
+  // check if user not approved so can't claim
 
+  if (user.nidStatus !== "approved") {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Your NID not approved yet");
+  }
   if (referralClaimed) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Referral Already Claimed");
   }

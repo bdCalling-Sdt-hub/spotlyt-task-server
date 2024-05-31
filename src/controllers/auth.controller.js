@@ -79,6 +79,7 @@ const login = catchAsync(async (req, res) => {
   }, 180000); // 3 minute in milliseconds
 
   const tokens = await tokenService.generateAuthTokens(user);
+  
   res.status(httpStatus.OK).json(
     response({
       message: "Login Successful",
