@@ -206,6 +206,12 @@ const taskRegister = async (userId, body) => {
       "Provide NID for account verification!"
     );
   }
+
+  const existingTask = await SubmitTask.findOne({ userId: user._id, taskId: body.taskId });
+  if (existingTask) {
+    throw new ApiError(httpStatus.CONFLICT, "Task already registered you.");
+  }
+  
   const data = {
     ...body,
     userId: user._id,
@@ -232,7 +238,7 @@ const taskSubmit = async (userId, submitTaskId, image) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Task is already completed");
   }
 
-  if (submitTask.status === "submitted" || submitTask.status==="accepted") {
+  if (submitTask.status === "submitted" ) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Already submitted");
   }
   
