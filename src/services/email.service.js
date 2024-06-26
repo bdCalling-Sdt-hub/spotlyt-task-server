@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const config = require("../config/config");
 const logger = require("../config/logger");
+const ApiError = require("../utils/ApiError");
 
 const transport = nodemailer.createTransport(config.email.smtp);
 /* istanbul ignore next */
@@ -15,27 +16,45 @@ if (config.env !== "test") {
     );
 }
 
-
 const sendEmail = async (to, subject, html) => {
   const msg = { from: config.email.from, to, subject, html };
-  await transport.sendMail(msg);
+  try {
+    await transport.sendMail(msg);
+  } catch (error) {
+    handleEmailError(error, msg);
+  }
 };
+
+const handleEmailError = async (error, msg) => {
+  if (error.responseCode === 454) {
+    logger.error("Too many login attempts, retrying after delay...");
+    await delay(60000); // Delay for 1 minute
+    try {
+      await transport.sendMail(msg);
+    } catch (error) {
+      logger.error("Failed to send email after retry: ", error);
+    }
+  } else {
+    logger.error("Failed to send email: ", error);
+  }
+};
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const sendEmailVerification = async (to, otp) => {
   console.log("sendEmailVerification", to, otp);
   const subject = "User verification code";
   const html = `
-
-  <body style="background-color: #f3f4f6; padding: 1rem; font-family: Arial, sans-serif;">
-    <div style="max-width: 24rem; margin: 0 auto; background-color: #fff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-      <h1 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Welcome to Spotlyt Task App</h1>
-      <p style="color: #4b5563; margin-bottom: 1rem;">Thank you for joining Spotlyt Task App. Your account is almost ready!</p>
-      <div style="background-color: #e5e7eb; padding: 1rem; border-radius: 0.25rem; text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">${otp}</div>
-      <p style="color: #4b5563; margin-bottom: 1rem;">Enter this code to verify your account.</p>
-      <p style="color: red; font-size: 0.8rem; margin-top: 1rem;">This code expires in <span id="timer">3:00</span> minutes.</p>
-    </div>
-</body>
-`;
+    <body style="background-color: #f3f4f6; padding: 1rem; font-family: Arial, sans-serif;">
+      <div style="max-width: 24rem; margin: 0 auto; background-color: #fff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h1 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Welcome to Spotlyt Task App</h1>
+        <p style="color: #4b5563; margin-bottom: 1rem;">Thank you for joining Spotlyt Task App. Your account is almost ready!</p>
+        <div style="background-color: #e5e7eb; padding: 1rem; border-radius: 0.25rem; text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">${otp}</div>
+        <p style="color: #4b5563; margin-bottom: 1rem;">Enter this code to verify your account.</p>
+        <p style="color: red; font-size: 0.8rem; margin-top: 1rem;">This code expires in <span id="timer">3:00</span> minutes.</p>
+      </div>
+    </body>
+  `;
   await sendEmail(to, subject, html);
 };
 
@@ -43,16 +62,15 @@ const sendResetPasswordEmail = async (to, otp) => {
   console.log("Otp", to, otp);
   const subject = "Verification Code";
   const html = `
-  <body style="background-color: #f3f4f6; padding: 1rem; font-family: Arial, sans-serif;">
-  <div style="max-width: 24rem; margin: 0 auto; background-color: #fff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-    <h1 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Verification Code</h1>
-    <div style="background-color: #e5e7eb; padding: 1rem; border-radius: 0.25rem; text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">${otp}</div>
-  </div>
-</body>
-`;
+    <body style="background-color: #f3f4f6; padding: 1rem; font-family: Arial, sans-serif;">
+      <div style="max-width: 24rem; margin: 0 auto; background-color: #fff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h1 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Verification Code</h1>
+        <div style="background-color: #e5e7eb; padding: 1rem; border-radius: 0.25rem; text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">${otp}</div>
+      </div>
+    </body>
+  `;
   await sendEmail(to, subject, html);
 };
-
 
 const sendVerificationEmail = async (to, token) => {
   const subject = "Email Verification";
